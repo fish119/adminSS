@@ -1,7 +1,7 @@
 # adminSS
 Restfull admin scaffold server side with springboot
 
-# What's included:
+## What's included:
 * springboot
 * druid
 * spring-data-jpa

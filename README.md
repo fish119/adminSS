@@ -1,5 +1,5 @@
 # adminSS
-Restfull admin scaffold server side with springboot
+> Restfull admin scaffold server side with springboot
 
 ## What's included:
 * springboot

@@ -16,8 +16,7 @@ public class TestController {
     SysUserRepository userRepository;
 
     @RequestMapping(value = "/test/admin", method = RequestMethod.POST)
-//    @PreAuthorize("hasRole('ADMIN')")
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
 //    @ApiMethod
 //    @ApiAuthToken
     public ResponseEntity<?> test() {
@@ -29,7 +28,6 @@ public class TestController {
 //    @ApiMethod
 //    @ApiAuthToken
     @RequestMapping(value = "/test/test", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> test2(){
         return  ResponseEntity.ok("OK");
     }

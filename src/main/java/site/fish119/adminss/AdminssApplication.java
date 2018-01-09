@@ -3,9 +3,11 @@ package site.fish119.adminss;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+@ComponentScan(basePackages ="site.fish119.adminss")
 @SpringBootApplication
 @EnableCaching
 @EnableSwagger2

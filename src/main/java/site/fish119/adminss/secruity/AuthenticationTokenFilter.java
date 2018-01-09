@@ -19,7 +19,7 @@ import java.io.IOException;
 @Component
 public class AuthenticationTokenFilter extends OncePerRequestFilter {
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsServiceImple userDetailsService;
 
     @Autowired
     TokenUtil jwtTokenUtil;
@@ -39,11 +39,11 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(
                             request));
                     logger.info("authenticated user " + username + ", setting security context");
+
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
         }
-
         filterChain.doFilter(request, response);
     }
 }

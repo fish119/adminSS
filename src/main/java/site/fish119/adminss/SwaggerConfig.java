@@ -28,13 +28,14 @@ public class SwaggerConfig {
                 .paths(PathSelectors.regex("^(?!auth).*$"))
                 .build()
                 .securitySchemes(securitySchemes())
-                .securityContexts(securityContexts())
-                ;
+                .securityContexts(securityContexts());
     }
+
     private List<ApiKey> securitySchemes() {
         return newArrayList(
                 new ApiKey("Authorization", "Authorization", "header"));
     }
+
     private List<SecurityContext> securityContexts() {
         return newArrayList(
                 SecurityContext.builder()
@@ -43,6 +44,7 @@ public class SwaggerConfig {
                         .build()
         );
     }
+
     List<SecurityReference> defaultAuth() {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];

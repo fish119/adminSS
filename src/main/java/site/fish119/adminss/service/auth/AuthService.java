@@ -18,6 +18,7 @@ import site.fish119.adminss.secruity.TokenUtil;
 import site.fish119.adminss.secruity.UserDetailsImple;
 
 import java.util.Date;
+import java.util.HashSet;
 
 @Service
 public class AuthService {
@@ -34,9 +35,7 @@ public class AuthService {
     SysRoleRepository roleRepository;
 
     public String login(String username, String password) {
-        
         UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(username, password);
-
         final Authentication authentication = authenticationManager.authenticate(upToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -80,7 +79,7 @@ public class AuthService {
         userToAdd.setUsername(username);
         userToAdd.setPassword(encoder.encode(rawPassword));
         userToAdd.setLastPasswordResetDate(new Date());
-        userToAdd.setRoles(roleRepository.findAll());
+        userToAdd.setRoles(new HashSet<>(roleRepository.findAll()));
         return userRepository.save(userToAdd);
     }
 }

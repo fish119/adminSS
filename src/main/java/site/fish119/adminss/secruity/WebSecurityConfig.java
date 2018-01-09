@@ -14,7 +14,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,6 +33,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsServiceImple userDetailsService;
+
+    @Autowired
+    private SecurityInterceptorImple securityInterceptor;
 
     @Bean
     public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
@@ -52,31 +59,36 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     //允许跨域
 //    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurerAdapter() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**").allowedOrigins("*")
-//                        .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
-//                        .allowCredentials(false).maxAge(3600);
-//            }
-//        };
-//    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui/**", "/swagger-resources/**", "/configuration/security/**", "/swagger-ui.html", "/webjars/**");
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("*")
+                        .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowCredentials(false).maxAge(3600);
+            }
+        };
     }
+
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+////        web.ignoring().antMatchers("/**");
+////        web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui/**", "/swagger-resources/**", "/configuration/security/**", "/swagger-ui.html", "/webjars/**");
+//    }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint()).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 // allow anonymous resource requests
-                .antMatchers("/druid/**","/auth/**").permitAll()
+                .antMatchers("/druid/**", "/auth/**", "/api-docs/",
+                        "/swagger-resources/**",
+                        "/swagger-ui.html",
+                        "/v2/api-docs",
+                        "/webjars/**").permitAll()
                 .antMatchers(
                         HttpMethod.GET,
                         "/",
@@ -90,10 +102,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.js"
                 ).permitAll()
                 .anyRequest().authenticated();
-//                .anyRequest().permitAll();
+
         // 添加JWT filter
         httpSecurity.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
-
+        httpSecurity.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
         // 禁用缓存
         httpSecurity.headers().cacheControl();
     }

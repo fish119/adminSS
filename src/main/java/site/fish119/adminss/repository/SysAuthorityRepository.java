@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import site.fish119.adminss.domain.SysAuthority;
 
-import java.util.List;
-
 @Repository
 @CacheConfig(cacheNames = "SysAuthorities")
 @Cacheable

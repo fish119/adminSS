@@ -15,7 +15,6 @@ import site.fish119.adminss.domain.SysAuthority;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
-import java.util.regex.Pattern;
 
 @Service
 public class AccessDecisionManagerImple implements AccessDecisionManager {
@@ -26,6 +25,7 @@ public class AccessDecisionManagerImple implements AccessDecisionManager {
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
         HttpServletRequest request = ((FilterInvocation) object).getHttpRequest();
         String url = request.getRequestURI();
+        String method;
         AntPathRequestMatcher matcher;
         if (url.contains("/swagger") ||
                 url.contains("/api-docs") ||
@@ -45,20 +45,14 @@ public class AccessDecisionManagerImple implements AccessDecisionManager {
                 if (ga instanceof SysAuthority) {
                     SysAuthority urlGrantedAuthority = (SysAuthority) ga;
                     url = urlGrantedAuthority.getUrl();
+                    method = urlGrantedAuthority.getMethod();
                     matcher = new AntPathRequestMatcher(url);
-                    //TODO;add method,like:
-//                if (matcher.matches(request)) {
-//                    return;
-//                }
-                    String rs = request.getRequestURI();
-                    if (url.equals(rs)) {
-                        return;
+                    if (matcher.matches(request)) {
+                        if (method.equals(request.getMethod()) || "ALL".equals(method)) {
+                            return;
+                        }
                     }
-//            } else if (ga.getAuthority().equals("ROLE_ANONYMOUS")) {
                 }
-//                else {
-//
-//                }
             }
         }
         throw new AccessDeniedException("no right");

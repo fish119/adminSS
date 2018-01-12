@@ -18,7 +18,6 @@ import java.util.HashMap;
 
 
 @RestController
-//@Api(description = "AuthController", name = "AuthController")
 public class AuthController {
     @Autowired
     AuthService service;
@@ -32,12 +31,10 @@ public class AuthController {
     }
 
     @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
-//    @ApiMethod
     public SysUser register(@RequestBody AuthRequest addedUser) {
         return service.register(addedUser);
     }
 
-    //    @ApiMethod
     @RequestMapping(value = "/auth/registerAdmin", method = RequestMethod.POST)
     public SysUser registerAdmin(@RequestBody AuthRequest addedUser) {
         return service.registerAdmin(addedUser);

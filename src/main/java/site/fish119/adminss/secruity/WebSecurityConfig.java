@@ -57,16 +57,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     //允许跨域
-//    @Bean
+    @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*")
-                        .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowCredentials(false).maxAge(3600);
+                registry.addMapping("/**").allowedOrigins("*");
             }
         };
+//        return new WebMvcConfigurerAdapter() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**").allowedOrigins("*")
+//                        .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
+//                        .allowCredentials(false).maxAge(3600);
+//            }
+//        };
     }
 
 //    @Override

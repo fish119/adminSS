@@ -25,4 +25,5 @@ nbdist/
 /.mvn/
 /.idea/
 /target/
-/log/spring.log
+/log/
+*.log

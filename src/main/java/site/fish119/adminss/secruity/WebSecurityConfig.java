@@ -15,7 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -57,23 +59,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     //允许跨域
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
-            }
-        };
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
 //        return new WebMvcConfigurerAdapter() {
 //            @Override
 //            public void addCorsMappings(CorsRegistry registry) {
 //                registry.addMapping("/**").allowedOrigins("*")
 //                        .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
+//                        .allowedHeaders("Authorization")
 //                        .allowCredentials(false).maxAge(3600);
 //            }
 //        };
-    }
+//    }
 
 //    @Override
 //    public void configure(WebSecurity web) throws Exception {
@@ -83,6 +80,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
+        //important 跨域配置，重要！
+        httpSecurity.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         httpSecurity
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint()).and()

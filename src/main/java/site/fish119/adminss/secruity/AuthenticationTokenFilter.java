@@ -1,6 +1,8 @@
 package site.fish119.adminss.secruity;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,20 +29,23 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(AuthConstant.tokenHeader);
         if(authHeader!=null&&authHeader.startsWith(AuthConstant.tokenPrefix)){
-            final String authToken = authHeader.substring(AuthConstant.tokenPrefix.length());
-            String username = jwtTokenUtil.getUsernameFromToken(authToken);
-            logger.info("checking authentication : "+username);
-            if(username!=null && SecurityContextHolder.getContext().getAuthentication() == null){
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(
-                            request));
-                    logger.info("authenticated user " + username + ", setting security context");
-
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+            try {
+                final String authToken = authHeader.substring(AuthConstant.tokenPrefix.length());
+                String username = jwtTokenUtil.getUsernameFromToken(authToken);
+                logger.info("checking authentication : " + username);
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(
+                                request));
+//                    logger.info("authenticated user " + username + ", setting security context");
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
                 }
+            }catch (ExpiredJwtException | CredentialsExpiredException e){
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "认证超时，请重新登录。");
             }
         }
         filterChain.doFilter(request, response);

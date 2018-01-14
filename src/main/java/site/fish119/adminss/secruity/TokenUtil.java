@@ -1,8 +1,10 @@
 package site.fish119.adminss.secruity;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -13,24 +15,35 @@ import java.util.Map;
 
 @Component
 public class TokenUtil implements Serializable {
+    Logger logger  = LoggerFactory.getLogger(this.getClass());
     private static final long serialVersionUID = -1L;
 
-    public String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) throws AuthenticationException {
+//        logger.info("refreshToken:"+refreshToken(token));
         String username;
         try {
             final Claims claims = getClaimsFromToken(token);
             username = claims.getSubject();
         } catch (Exception e) {
+            if(e instanceof ExpiredJwtException){
+                throw new CredentialsExpiredException("认证超时，请重新登录");
+            }
             username = null;
         }
         return username;
     }
 
-    private Claims getClaimsFromToken(String token) {
+    private Claims getClaimsFromToken(String token) throws ExpiredJwtException{
         Claims claims;
         try {
             claims = Jwts.parser().setSigningKey(AuthConstant.secret).parseClaimsJws(token).getBody();
-        } catch (Exception e) {
+        }
+        catch (ExpiredJwtException e){
+            throw e;
+        }
+        catch (Exception err){
+            err.printStackTrace();
+            logger.error(err.getLocalizedMessage());
             claims = null;
         }
         return claims;

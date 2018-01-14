@@ -1,5 +1,7 @@
 package site.fish119.adminss.secruity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,6 +13,7 @@ import site.fish119.adminss.repository.SysUserRepository;
 
 @Service
 public class UserDetailsServiceImple implements UserDetailsService {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private SysUserRepository userRepository;
 
@@ -19,7 +22,7 @@ public class UserDetailsServiceImple implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         SysUser user = userRepository.findByUsername(s);
         if(user==null){
-            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", s));
+            throw new UsernameNotFoundException(String.format("用户不存在 '%s'.", s));
         }else{
             return new UserDetailsImple(user);
         }

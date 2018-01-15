@@ -30,7 +30,7 @@ public class MainService {
             result.put("user", user);
             Set<User> userSet = new HashSet<>();
             userSet.add(user);
-            result.put("menus", cleanChildrenMenu(menuRepository.findByUsersAndParentMenuIsNullOrderBySort(userSet), user));
+            result.put("menus", cleanChildrenMenu(menuRepository.findByUsersAndParentMenuIsNullOrderBySortAsc(userSet), user));
         } else {
             throw new BadCredentialsException("用户未登录");
         }

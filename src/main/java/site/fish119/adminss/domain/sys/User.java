@@ -34,12 +34,14 @@ public class User implements Serializable {
     @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+    @OrderBy("sort ASC")
     private Set<Role> roles = new HashSet<>(0);
 
     @JsonIgnore
     @ManyToMany(targetEntity = Menu.class, fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "MENU_ID"))
+    @OrderBy("sort ASC")
     private Set<Menu> menus = new HashSet<>(0);
 
     @Override

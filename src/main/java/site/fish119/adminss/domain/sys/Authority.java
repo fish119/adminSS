@@ -34,10 +34,12 @@ public class Authority implements Serializable , GrantedAuthority {
     private Authority parent;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parent")
+    @OrderBy("sort ASC")
     private Set<Authority> children = new HashSet<>(0);
 
     @JsonIgnore
     @ManyToMany(mappedBy="authorities",fetch = FetchType.EAGER)
+    @OrderBy("sort ASC")
     private Set<Role> roles = new HashSet<>(0);
 
     public String getPermissionUrl() {

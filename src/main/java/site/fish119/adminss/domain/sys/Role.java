@@ -30,6 +30,7 @@ public class Role implements Serializable  {
     @ManyToMany(targetEntity = Authority.class, fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "ROLE_ID"),
             inverseJoinColumns = @JoinColumn(name = "Authority_ID"))
+    @OrderBy("sort ASC")
     private Set<Authority> authorities = new HashSet<>(0);
 
     public Long getId() {

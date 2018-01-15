@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import site.fish119.adminss.domain.SysUser;
+import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.secruity.AuthConstant;
 import site.fish119.adminss.secruity.AuthRequest;
 import site.fish119.adminss.service.auth.AuthService;
@@ -31,12 +31,12 @@ public class AuthController {
     }
 
     @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
-    public SysUser register(@RequestBody AuthRequest addedUser) {
+    public User register(@RequestBody AuthRequest addedUser) {
         return service.register(addedUser);
     }
 
     @RequestMapping(value = "/auth/registerAdmin", method = RequestMethod.POST)
-    public SysUser registerAdmin(@RequestBody AuthRequest addedUser) {
+    public User registerAdmin(@RequestBody AuthRequest addedUser) {
         return service.registerAdmin(addedUser);
     }
 

@@ -8,16 +8,16 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import site.fish119.adminss.domain.SysUser;
+import site.fish119.adminss.domain.sys.User;
 
 @RepositoryRestResource
 @Api
-public interface SysUserRepository extends PagingAndSortingRepository<SysUser, Long> {
+public interface SysUserRepository extends PagingAndSortingRepository<User, Long> {
     @Cacheable(cacheNames = "sysUsers", key = "#p0")
-    SysUser findByUsername(@Param("username") final String username);
+    User findByUsername(@Param("username") final String username);
 
     @Override
-    SysUser findOne(Long id);
+    User findOne(Long id);
 
     @Override
     @Caching(
@@ -27,5 +27,5 @@ public interface SysUserRepository extends PagingAndSortingRepository<SysUser, L
                     @CachePut(cacheNames = "sysUsers", key = "#result.username", condition = "#result!=null")
             }
     )
-    SysUser save(SysUser user);
+    User save(User user);
 }

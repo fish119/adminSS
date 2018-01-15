@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import site.fish119.adminss.domain.SysUser;
+import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.repository.SysRoleRepository;
 import site.fish119.adminss.repository.SysUserRepository;
 import site.fish119.adminss.secruity.AuthConstant;
@@ -44,14 +44,14 @@ public class AuthService {
         return token;
     }
 
-    public SysUser register(AuthRequest requestUser) {
+    public User register(AuthRequest requestUser) {
         final String username = requestUser.getUsername();
         if(userRepository.findByUsername(username)!=null) {
             return null;
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         final String rawPassword = requestUser.getPassword();
-        SysUser userToAdd = new SysUser();
+        User userToAdd = new User();
         userToAdd.setUsername(username);
         userToAdd.setPassword(encoder.encode(rawPassword));
         userToAdd.setLastPasswordResetDate(new Date());
@@ -68,14 +68,14 @@ public class AuthService {
         return null;
     }
 
-    public SysUser registerAdmin(AuthRequest requestUser) {
+    public User registerAdmin(AuthRequest requestUser) {
         final String username = requestUser.getUsername();
         if(userRepository.findByUsername(username)!=null) {
             return null;
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         final String rawPassword = requestUser.getPassword();
-        SysUser userToAdd = new SysUser();
+        User userToAdd = new User();
         userToAdd.setUsername(username);
         userToAdd.setPassword(encoder.encode(rawPassword));
         userToAdd.setLastPasswordResetDate(new Date());

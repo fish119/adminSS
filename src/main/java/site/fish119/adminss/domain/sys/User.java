@@ -1,4 +1,4 @@
-package site.fish119.adminss.domain;
+package site.fish119.adminss.domain.sys;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "sys_user")
 @Data
-public class SysUser implements Serializable {
+public class User implements Serializable {
     private static final long serialVersionUID = -1L;
 
     @Id
@@ -31,10 +31,24 @@ public class SysUser implements Serializable {
     private String avatar;
 
 
-    @ManyToMany(targetEntity = SysRole.class, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER)
     @JoinTable(joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-    private Set<SysRole> roles = new HashSet<>(0);
+    private Set<Role> roles = new HashSet<>(0);
 
+    @JsonIgnore
+    @ManyToMany(targetEntity = Menu.class, fetch = FetchType.EAGER)
+    @JoinTable(joinColumns = @JoinColumn(name = "USER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "MENU_ID"))
+    private Set<Menu> menus = new HashSet<>(0);
 
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return this.getId().equals(((User) obj).getId());
+    }
 }

@@ -1,4 +1,4 @@
-package site.fish119.adminss.domain;
+package site.fish119.adminss.domain.sys;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.Set;
 @Entity()
 @Table(name = "sys_authority")
 @Data
-public class SysAuthority implements Serializable , GrantedAuthority {
+public class Authority implements Serializable , GrantedAuthority {
     private static final long serialVersionUID = -1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,14 +31,14 @@ public class SysAuthority implements Serializable , GrantedAuthority {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    private SysAuthority parent;
+    private Authority parent;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "parent")
-    private Set<SysAuthority> children = new HashSet<>(0);
+    private Set<Authority> children = new HashSet<>(0);
 
     @JsonIgnore
     @ManyToMany(mappedBy="authorities",fetch = FetchType.EAGER)
-    private Set<SysRole> roles = new HashSet<>(0);
+    private Set<Role> roles = new HashSet<>(0);
 
     public String getPermissionUrl() {
         return url;

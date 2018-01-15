@@ -11,7 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Service;
-import site.fish119.adminss.domain.SysAuthority;
+import site.fish119.adminss.domain.sys.Authority;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
@@ -42,8 +42,8 @@ public class AccessDecisionManagerImple implements AccessDecisionManager {
             return;
         } else {
             for (GrantedAuthority ga : authentication.getAuthorities()) {
-                if (ga instanceof SysAuthority) {
-                    SysAuthority urlGrantedAuthority = (SysAuthority) ga;
+                if (ga instanceof Authority) {
+                    Authority urlGrantedAuthority = (Authority) ga;
                     url = urlGrantedAuthority.getUrl();
                     method = urlGrantedAuthority.getMethod();
                     matcher = new AntPathRequestMatcher(url);

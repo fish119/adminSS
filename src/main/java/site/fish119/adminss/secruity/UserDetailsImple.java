@@ -2,9 +2,9 @@ package site.fish119.adminss.secruity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import site.fish119.adminss.domain.SysAuthority;
-import site.fish119.adminss.domain.SysRole;
-import site.fish119.adminss.domain.SysUser;
+import site.fish119.adminss.domain.sys.Authority;
+import site.fish119.adminss.domain.sys.Role;
+import site.fish119.adminss.domain.sys.User;
 
 import java.util.*;
 
@@ -24,12 +24,12 @@ public class UserDetailsImple implements UserDetails {
         this.lastPasswordResetDate = lastPasswordResetDate;
     }
 
-    public UserDetailsImple(SysUser user){
+    public UserDetailsImple(User user){
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
-        Set<SysAuthority> authorities = new HashSet<>();
-        for(SysRole role : user.getRoles()){
+        Set<Authority> authorities = new HashSet<>();
+        for(Role role : user.getRoles()){
             authorities.addAll(role.getAuthorities());
         }
         this.authorities = authorities;

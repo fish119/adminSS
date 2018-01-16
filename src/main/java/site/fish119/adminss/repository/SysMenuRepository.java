@@ -11,5 +11,5 @@ import java.util.Set;
 @Repository
 public interface SysMenuRepository extends JpaRepository<Menu,Long>{
     List<Menu> findByUsersAndParentMenuIsNullOrderBySortAsc(final Set<User> users);
-
+    List<Menu> findByParentMenuIsNullOrderBySortAsc();
 }

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.fish119.adminss.domain.sys.Menu;
-import site.fish119.adminss.service.setting.SettingService;
+import site.fish119.adminss.service.setting.MenuService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
 @RestController
 public class MenuController {
     @Autowired
-    private SettingService settingService;
+    private MenuService settingService;
 
     @RequestMapping(value = "/setting/menus", method = RequestMethod.GET)
     public ResponseEntity<?> getAllMenus() {

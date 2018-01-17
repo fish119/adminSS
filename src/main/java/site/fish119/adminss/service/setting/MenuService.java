@@ -9,7 +9,7 @@ import site.fish119.adminss.repository.SysMenuRepository;
 import java.util.List;
 
 @Service
-public class SettingService {
+public class MenuService {
     @Autowired
     private SysMenuRepository menuRepository;
 

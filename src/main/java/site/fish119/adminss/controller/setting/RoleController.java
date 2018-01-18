@@ -18,23 +18,23 @@ public class RoleController {
     @RequestMapping(value = "/setting/roles", method = RequestMethod.GET)
     public ResponseEntity<?> getAllRoles() {
         Map<String, Object> result = new HashMap<>();
-        result.put("data",roleService.findAll());
+        result.put("data", roleService.findAll());
         return ResponseEntity.ok(result);
     }
 
     @RequestMapping(value = "/setting/roles", method = RequestMethod.POST)
-    public ResponseEntity<?> saveRole(@RequestBody JSONObject reqBody){
+    public ResponseEntity<?> saveRole(@RequestBody JSONObject reqBody) {
         Map<String, Object> result = new HashMap<>();
-        roleService.save(reqBody.getObject("role",Role.class));
-        result.put("data",roleService.findAll());
+        roleService.save(reqBody.getObject("role", Role.class));
+        result.put("data", roleService.findAll());
         return ResponseEntity.ok(result);
     }
 
     @RequestMapping(value = "/setting/role/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> delRole(@PathVariable("id") long id){
+    public ResponseEntity<?> delRole(@PathVariable("id") long id) {
         Map<String, Object> result = new HashMap<>();
         roleService.delRole(id);
-        result.put("data",roleService.findAll());
+        result.put("data", roleService.findAll());
         return ResponseEntity.ok(result);
     }
 }

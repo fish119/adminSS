@@ -6,7 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import site.fish119.adminss.domain.sys.Authority;
 import site.fish119.adminss.repository.SysAuthorityRepository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AuthorityService {
@@ -18,36 +20,59 @@ public class AuthorityService {
     }
 
     @Transactional
-    public Authority saveAuthority(Long parentId, Authority subAuthority) {
-        Authority authority;
-        if (parentId != null) {
-            authority = authorityRepository.findOne(parentId);
-            if (subAuthority.getId() != null) {
-                subAuthority.setParent(authority);
-                return authorityRepository.save(subAuthority);
+    public void saveAuthority(Long parentId, Authority authority) {
+        Authority parentMenu;
+        if (authority.getId() != null) {
+            Authority dbAuth = authorityRepository.findOne(authority.getId());
+            dbAuth.setDescription(authority.getDescription());
+            dbAuth.setName(authority.getName());
+            dbAuth.setSort(authority.getSort());
+            dbAuth.setUrl(authority.getUrl());
+            dbAuth.setMethod(authority.getMethod());
+            if (parentId != null) {
+                parentMenu = authorityRepository.findOne(parentId);
+                if (dbAuth.getParent() != null) {
+                    Authority oldParent = authorityRepository.findOne(dbAuth.getParent().getId());
+                    oldParent.getChildren().remove(dbAuth);
+                    authorityRepository.save(oldParent);
+                }
+                dbAuth.setParent(parentMenu);
+                parentMenu.getChildren().add(dbAuth);
+                authorityRepository.save(parentMenu);
             } else {
-                authority.getChildren().add(subAuthority);
-                subAuthority.setParent(authority);
-                return authorityRepository.save(authority);
+                if (dbAuth.getParent() != null) {
+                    Authority oldParent = authorityRepository.findOne(dbAuth.getParent().getId());
+                    oldParent.getChildren().remove(authorityRepository.findOne(authority.getId()));
+                    authorityRepository.save(oldParent);
+                }
+                dbAuth.setParent(null);
+                authorityRepository.save(dbAuth);
             }
         } else {
-            if(subAuthority.getChildren().iterator().hasNext()) {
-                Authority trueSubMenu = subAuthority.getChildren().iterator().next();
-                trueSubMenu.setParent(subAuthority);
-                return authorityRepository.save(trueSubMenu);
-            }else{
-                return authorityRepository.save(subAuthority);
+            if (parentId != null) {
+                parentMenu = authorityRepository.findOne(parentId);
+                if(parentMenu.getChildren().isEmpty()){
+                    Set<Authority> set = new HashSet<>();
+                    set.add(authority);
+                    parentMenu.setChildren(set);
+                }else {
+                    parentMenu.getChildren().add(authority);
+                }
+                authority.setParent(parentMenu);
+                authorityRepository.save(parentMenu);
+            } else {
+                authorityRepository.save(authority);
             }
         }
     }
 
     @Transactional()
-    public void delAuthority(Long id){
+    public void delAuthority(Long id) {
         authorityRepository.delete(id);
     }
 
     @Transactional()
-    public void delSubAuthority(Long parentId,Long id){
+    public void delSubAuthority(Long parentId, Long id) {
         Authority parentAuthority = authorityRepository.findOne(parentId);
         Authority authority = authorityRepository.findOne(id);
         authority.setParent(null);

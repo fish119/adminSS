@@ -18,21 +18,21 @@ public class Menu implements Serializable {
     private String action;
     private String icon;
     private String title;
-    @OrderColumn
     private Long sort;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_id")
     @JsonIgnore
-    private Menu parentMenu;
+    private Menu parent;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "parentMenu")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "parent")
     @OrderBy("sort ASC")
-    private Set<Menu> childrenMenu = new HashSet<>(0);
+    private Set<Menu> children = new HashSet<>(0);
 
     @JsonIgnore
     @ManyToMany(mappedBy="menus")
-    private Set<User> users = new HashSet<>(0);
+    @OrderBy("sort ASC")
+    private Set<Role> mRoles = new HashSet<>(0);
 
     public Long getId() {
         return id;
@@ -74,27 +74,42 @@ public class Menu implements Serializable {
         this.sort = sort;
     }
 
-    public Menu getParentMenu() {
-        return parentMenu;
+    public Menu getParent() {
+        return parent;
     }
 
-    public void setParentMenu(Menu parentMenu) {
-        this.parentMenu = parentMenu;
+    public void setParent(Menu parent) {
+        this.parent = parent;
     }
 
-    public Set<Menu> getChildrenMenu() {
-        return childrenMenu;
+    public Set<Menu> getChildren() {
+        return children;
     }
 
-    public void setChildrenMenu(Set<Menu> childrenMenu) {
-        this.childrenMenu = childrenMenu;
+    public void setChildren(Set<Menu> children) {
+        this.children = children;
     }
 
-    public Set<User> getUsers() {
-        return users;
+    public Set<Role> getmRoles() {
+        return mRoles;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setmRoles(Set<Role> mRoles) {
+        this.mRoles = mRoles;
+    }
+
+    @Override
+    public int hashCode() {
+        if(getId()!=null){
+            return getId().hashCode();
+        }
+        else{
+            return -1;
+        }
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return this.getId().equals(((Menu) obj).getId());
     }
 }

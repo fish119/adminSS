@@ -5,6 +5,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import site.fish119.adminss.domain.sys.Menu;
+import site.fish119.adminss.domain.sys.Role;
 import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.repository.SysMenuRepository;
 import site.fish119.adminss.repository.SysUserRepository;
@@ -28,20 +29,20 @@ public class MainService {
             UserDetailsImple userDetails = (UserDetailsImple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userRepository.findByUsername(userDetails.getUsername());
             result.put("user", user);
-            Set<User> userSet = new HashSet<>();
-            userSet.add(user);
-            result.put("menus", cleanChildrenMenu(menuRepository.findByUsersAndParentMenuIsNullOrderBySortAsc(userSet), user));
+            result.put("menus", cleanChildrenMenu(menuRepository.findByMRolesAndParentIsNullOrderBySortAsc(user.getRoles()), user.getRoles()));
         } else {
             throw new BadCredentialsException("用户未登录");
         }
         return result;
     }
 
-    private List<Menu> cleanChildrenMenu(List<Menu> menus, User user) {
+    private List<Menu> cleanChildrenMenu(List<Menu> menus, Set<Role> roles) {
         for (Menu menu : menus) {
-            menu.getChildrenMenu().removeIf(
-                    subMenu -> subMenu.getUsers().isEmpty() || !subMenu.getUsers().contains(user)
-            );
+            for(Role role : roles) {
+                menu.getChildren().removeIf(
+                        subMenu -> subMenu.getmRoles().isEmpty() || !subMenu.getmRoles().contains(role)
+                );
+            }
         }
         return menus;
     }

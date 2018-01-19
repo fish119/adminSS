@@ -33,6 +33,13 @@ public class Role implements Serializable  {
     @OrderBy("sort ASC")
     private Set<Authority> authorities = new HashSet<>(0);
 
+
+    @ManyToMany(targetEntity = Menu.class, fetch = FetchType.EAGER)
+    @JoinTable(name="sys_role_menus", joinColumns = @JoinColumn(name = "ROLE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "MENU_ID"))
+    @OrderBy("sort ASC")
+    private Set<Menu> menus = new HashSet<>(0);
+
     public Long getId() {
         return id;
     }
@@ -71,5 +78,13 @@ public class Role implements Serializable  {
 
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
+    }
+
+    public Set<Menu> getMenus() {
+        return menus;
+    }
+
+    public void setMenus(Set<Menu> menus) {
+        this.menus = menus;
     }
 }

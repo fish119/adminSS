@@ -37,16 +37,14 @@ public class User implements Serializable {
     @OrderBy("sort ASC")
     private Set<Role> roles = new HashSet<>(0);
 
-    @JsonIgnore
-    @ManyToMany(targetEntity = Menu.class, fetch = FetchType.EAGER)
-    @JoinTable(joinColumns = @JoinColumn(name = "USER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "MENU_ID"))
-    @OrderBy("sort ASC")
-    private Set<Menu> menus = new HashSet<>(0);
-
     @Override
     public int hashCode() {
-        return getId().hashCode();
+        if(getId()!=null){
+            return getId().hashCode();
+        }
+        else{
+            return -1;
+        }
     }
 
     @Override

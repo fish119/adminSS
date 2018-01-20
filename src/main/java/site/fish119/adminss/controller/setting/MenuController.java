@@ -30,6 +30,7 @@ public class MenuController {
         Map<String, Object> result = new HashMap<>();
         settingService.saveMenu(reqBody.getLong("parentId"),reqBody.getObject("menu",Menu.class));
         result.put("data",settingService.findAllMenus());
+        result.put("userMenus",settingService.getCurrentUserMenus());
         return ResponseEntity.ok(result);
     }
 
@@ -38,6 +39,7 @@ public class MenuController {
         Map<String, Object> result = new HashMap<>();
         settingService.delMenu(id);
         result.put("data",settingService.findAllMenus());
+        result.put("userMenus",settingService.getCurrentUserMenus());
         return ResponseEntity.ok(result);
     }
 
@@ -46,6 +48,14 @@ public class MenuController {
         Map<String, Object> result = new HashMap<>();
         settingService.delSubMenu(parentId,id);
         result.put("data",settingService.findAllMenus());
+        result.put("userMenus",settingService.getCurrentUserMenus());
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/setting/currentUserMenus", method = RequestMethod.GET)
+    public ResponseEntity<?> getCurrentUserMenus(){
+        Map<String, Object> result = new HashMap<>();
+        result.put("data",settingService.getCurrentUserMenus());
         return ResponseEntity.ok(result);
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.fish119.adminss.domain.sys.Role;
+import site.fish119.adminss.service.setting.MenuService;
 import site.fish119.adminss.service.setting.RoleService;
 
 import java.util.HashMap;
@@ -14,6 +15,8 @@ import java.util.Map;
 public class RoleController {
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private MenuService menuService;
 
     @RequestMapping(value = "/setting/roles", method = RequestMethod.GET)
     public ResponseEntity<?> getAllRoles() {
@@ -27,6 +30,7 @@ public class RoleController {
         Map<String, Object> result = new HashMap<>();
         roleService.save(reqBody.getObject("role", Role.class));
         result.put("data", roleService.findAll());
+        result.put("userMenus",menuService.getCurrentUserMenus());
         return ResponseEntity.ok(result);
     }
 
@@ -35,6 +39,7 @@ public class RoleController {
         Map<String, Object> result = new HashMap<>();
         roleService.delRole(id);
         result.put("data", roleService.findAll());
+        result.put("userMenus",menuService.getCurrentUserMenus());
         return ResponseEntity.ok(result);
     }
 }

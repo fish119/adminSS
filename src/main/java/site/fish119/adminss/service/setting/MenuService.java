@@ -1,10 +1,16 @@
 package site.fish119.adminss.service.setting;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.fish119.adminss.Utils.MainUtil;
 import site.fish119.adminss.domain.sys.Menu;
+import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.repository.SysMenuRepository;
+import site.fish119.adminss.repository.SysUserRepository;
+import site.fish119.adminss.secruity.UserDetailsImple;
 
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +20,9 @@ import java.util.Set;
 public class MenuService {
     @Autowired
     private SysMenuRepository menuRepository;
+
+    @Autowired
+    private SysUserRepository userRepository;
 
     public List<Menu> findAllMenus() {
         return menuRepository.findByParentIsNullOrderBySortAsc();
@@ -50,11 +59,11 @@ public class MenuService {
         } else {
             if (parentId != null) {
                 parentMenu = menuRepository.findOne(parentId);
-                if(parentMenu.getChildren().isEmpty()){
+                if (parentMenu.getChildren().isEmpty()) {
                     Set<Menu> set = new HashSet<>();
                     set.add(menu);
                     parentMenu.setChildren(set);
-                }else {
+                } else {
                     parentMenu.getChildren().add(menu);
                 }
                 menu.setParent(parentMenu);
@@ -77,5 +86,16 @@ public class MenuService {
         menu.setParent(null);
         parentMenu.getChildren().remove(menu);
         menuRepository.delete(menu);
+    }
+
+    public List<Menu> getCurrentUserMenus() {
+        if (SecurityContextHolder.getContext().getAuthentication() != null
+                && SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null) {
+            UserDetailsImple userDetails = (UserDetailsImple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = userRepository.findByUsername(userDetails.getUsername());
+            return MainUtil.cleanChildrenMenu(menuRepository.findByMRolesAndParentIsNullOrderBySortAsc(user.getRoles()), user.getRoles());
+        } else {
+            throw new BadCredentialsException("用户未登录");
+        }
     }
 }

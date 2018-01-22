@@ -47,6 +47,14 @@ public class DepartService {
 
     @Transactional
     public void del(Long id) {
+        Department dp = departmentRepository.findOne(id);
+        if(dp!=null){
+            if(dp.getParent()!=null){
+                dp.getParent().getChildren().remove(dp);
+                departmentRepository.saveAndFlush(dp.getParent());
+                dp.setParent(null);
+            }
+        }
         departmentRepository.delete(id);
     }
 }

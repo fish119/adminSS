@@ -37,6 +37,10 @@ public class User implements Serializable {
     @OrderBy("sort ASC")
     private Set<Role> roles = new HashSet<>(0);
 
+    @ManyToOne(fetch= FetchType.EAGER)
+    @JoinColumn(name="dept_id")
+    private Department department;
+
     @Override
     public int hashCode() {
         if(getId()!=null){

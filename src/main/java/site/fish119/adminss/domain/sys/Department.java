@@ -11,7 +11,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "sys_department")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 public class Department implements Serializable {
     private static final long serialVersionUID = -1L;
 
@@ -26,6 +25,7 @@ public class Department implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parent_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
     private Department parent;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

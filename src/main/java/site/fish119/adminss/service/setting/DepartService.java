@@ -21,7 +21,6 @@ public class DepartService {
     public void save(Long parentId, Department depart) {
         Department dbDepart = depart.getId() == null ? depart : departmentRepository.findOne(depart.getId());
         Department oldParent = dbDepart.getParent();
-
         if (parentId != null) {
             Department parentDepart = departmentRepository.findOne(parentId);
             if (oldParent != null && !oldParent.getId().equals(parentId)) {

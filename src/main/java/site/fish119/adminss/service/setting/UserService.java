@@ -1,16 +1,19 @@
 package site.fish119.adminss.service.setting;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import site.fish119.adminss.Utils.Constant;
 import site.fish119.adminss.Utils.MainUtil;
 import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.repository.SysUserRepository;
 
+import java.util.Date;
+
 @Service
 public class UserService {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     SysUserRepository userRepository;
 
@@ -25,5 +28,51 @@ public class UserService {
         } else {
             return userRepository.findByUsernameIgnoreCaseContainingOrNicknameIgnoreCaseContainingOrPhoneIgnoreCaseContainingOrEmailIgnoreCaseContaining(searchStr, searchStr, searchStr, searchStr, MainUtil.getPageRequest(page, size, sortColumn, direction));
         }
+    }
+
+    @Transactional
+    public void save(User user) {
+        if (user.getId() != null) {
+            User dbUser = userRepository.findOne(user.getId());
+            dbUser.setUsername(user.getUsername());
+            dbUser.setRoles(user.getRoles());
+            dbUser.setDepartment(user.getDepartment());
+            dbUser.setEmail(user.getEmail());
+            dbUser.setNickname(user.getNickname());
+            dbUser.setPhone(user.getPhone());
+            userRepository.save(dbUser);
+        } else {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            user.setPassword(encoder.encode(Constant.DEFAULT_PASSWORD));
+            user.setLastPasswordResetDate(new Date());
+            userRepository.save(user);
+        }
+    }
+
+    @Transactional
+    public void setDefaultPassword(Long id) {
+        User user = userRepository.findOne(id);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(Constant.DEFAULT_PASSWORD));
+        user.setLastPasswordResetDate(new Date());
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        userRepository.delete(id);
+    }
+
+    public boolean testUniquePhone(String phone,Long id) {
+        boolean hasPhone = userRepository.findFirstByPhoneAndIdNot(phone, id) == null;
+        LoggerFactory.getLogger(this.getClass()).info("hasPhone:"+phone+":"+id+":"+hasPhone);
+        return hasPhone;
+    }
+
+    public boolean testUniqueUsername(String username,Long id) {
+        return userRepository.findFirstByUsernameAndIdNot(username,id) == null;
+    }
+    public boolean testUniqueNickname(String nickname,Long id) {
+        return userRepository.findFirstByNicknameAndIdNot(nickname,id) == null;
     }
 }

@@ -37,7 +37,7 @@ public class Authority implements Serializable , GrantedAuthority {
     private Set<Authority> children = new HashSet<>(0);
 
     @JsonIgnore
-    @ManyToMany(mappedBy="authorities",fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy="authorities",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @OrderBy("sort ASC")
     private Set<Role> roles = new HashSet<>(0);
 
@@ -50,6 +50,7 @@ public class Authority implements Serializable , GrantedAuthority {
     }
 
     @Override
+    @JsonIgnore
     public String getAuthority() {
         return this.url + ";" + this.method;
     }

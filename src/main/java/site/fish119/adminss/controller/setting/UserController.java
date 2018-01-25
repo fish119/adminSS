@@ -71,4 +71,11 @@ public class UserController {
         result.put("data", userService.testUniqueNickname(nickname,id));
         return ResponseEntity.ok(result);
     }
+
+    @RequestMapping(value = "/setting/user/{id}/email", method = RequestMethod.GET)
+    public ResponseEntity<?> findUserByEmail(@PathVariable("id") Long id,@RequestParam("email") String email) {
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("data", userService.testUniqueEmail(email,id));
+        return ResponseEntity.ok(result);
+    }
 }

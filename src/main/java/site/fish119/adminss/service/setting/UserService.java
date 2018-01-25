@@ -1,6 +1,5 @@
 package site.fish119.adminss.service.setting;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -63,16 +62,19 @@ public class UserService {
         userRepository.delete(id);
     }
 
-    public boolean testUniquePhone(String phone,Long id) {
-        boolean hasPhone = userRepository.findFirstByPhoneAndIdNot(phone, id) == null;
-        LoggerFactory.getLogger(this.getClass()).info("hasPhone:"+phone+":"+id+":"+hasPhone);
-        return hasPhone;
+    public boolean testUniquePhone(String phone, Long id) {
+        return userRepository.findFirstByPhoneAndIdNot(phone, id) == null;
     }
 
-    public boolean testUniqueUsername(String username,Long id) {
-        return userRepository.findFirstByUsernameAndIdNot(username,id) == null;
+    public boolean testUniqueUsername(String username, Long id) {
+        return userRepository.findFirstByUsernameAndIdNot(username, id) == null;
     }
-    public boolean testUniqueNickname(String nickname,Long id) {
-        return userRepository.findFirstByNicknameAndIdNot(nickname,id) == null;
+
+    public boolean testUniqueNickname(String nickname, Long id) {
+        return userRepository.findFirstByNicknameAndIdNot(nickname, id) == null;
+    }
+
+    public boolean testUniqueEmail(String email, Long id) {
+        return userRepository.findFirstByEmailAndIdNot(email, id) == null;
     }
 }

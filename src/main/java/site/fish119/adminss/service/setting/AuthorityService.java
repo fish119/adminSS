@@ -1,5 +1,6 @@
 package site.fish119.adminss.service.setting;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ public class AuthorityService {
 
     @Transactional
     public void saveAuthority(Long parentId, Authority authority) {
+        LoggerFactory.getLogger(this.getClass()).info("authority:"+authority.getUrl());
         Authority parentMenu;
         if (authority.getId() != null) {
             Authority dbAuth = authorityRepository.findOne(authority.getId());
@@ -46,6 +48,8 @@ public class AuthorityService {
                     authorityRepository.save(oldParent);
                 }
                 dbAuth.setParent(null);
+
+                LoggerFactory.getLogger(this.getClass()).info("dbAuth:"+dbAuth.getUrl());
                 authorityRepository.save(dbAuth);
             }
         } else {
@@ -73,10 +77,10 @@ public class AuthorityService {
 
     @Transactional()
     public void delSubAuthority(Long parentId, Long id) {
-        Authority parentAuthority = authorityRepository.findOne(parentId);
-        Authority authority = authorityRepository.findOne(id);
-        authority.setParent(null);
-        parentAuthority.getChildren().remove(authority);
-        authorityRepository.delete(authority);
+//        Authority parentAuthority = authorityRepository.findOne(parentId);
+//        Authority authority = authorityRepository.findOne(id);
+//        authority.setParent(null);
+//        parentAuthority.getChildren().remove(authority);
+        authorityRepository.delete(id);
     }
 }

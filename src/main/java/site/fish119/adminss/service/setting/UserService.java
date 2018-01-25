@@ -1,6 +1,7 @@
 package site.fish119.adminss.service.setting;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,7 @@ import site.fish119.adminss.Utils.Constant;
 import site.fish119.adminss.Utils.MainUtil;
 import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.repository.SysUserRepository;
+import site.fish119.adminss.secruity.UserDetailsImple;
 
 import java.util.Date;
 
@@ -44,6 +46,7 @@ public class UserService {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setPassword(encoder.encode(Constant.DEFAULT_PASSWORD));
             user.setLastPasswordResetDate(new Date());
+            user.setCreateDate(new Date());
             userRepository.save(user);
         }
     }
@@ -76,5 +79,9 @@ public class UserService {
 
     public boolean testUniqueEmail(String email, Long id) {
         return userRepository.findFirstByEmailAndIdNot(email, id) == null;
+    }
+
+    public User findCurrentUser(){
+        return userRepository.findOne(((UserDetailsImple) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
     }
 }

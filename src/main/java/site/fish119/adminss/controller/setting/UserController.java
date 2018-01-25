@@ -78,4 +78,11 @@ public class UserController {
         result.put("data", userService.testUniqueEmail(email,id));
         return ResponseEntity.ok(result);
     }
+
+    @RequestMapping(value = "/setting/user/current", method = RequestMethod.GET)
+    public ResponseEntity<?> findUserByEmail() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", userService.findCurrentUser());
+        return ResponseEntity.ok(result);
+    }
 }

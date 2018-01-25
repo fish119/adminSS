@@ -53,6 +53,11 @@ public class User implements Serializable {
     @JoinColumn(name="dept_id")
     private Department department;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @Column(nullable = false)
+    private Date createDate;
+
     @Override
     public int hashCode() {
         if(getId()!=null){

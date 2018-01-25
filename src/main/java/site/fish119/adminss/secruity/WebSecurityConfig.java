@@ -110,7 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/*.html",
                         "/**/*.gif",
                         "/**/*.png",
-                        "/*.jpg",
+                        "/**/*.jpg",
                         "/favicon.ico",
                         "/**/*.html",
                         "/**/*.css",

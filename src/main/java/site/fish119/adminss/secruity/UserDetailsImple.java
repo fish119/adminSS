@@ -14,14 +14,16 @@ public class UserDetailsImple implements UserDetails {
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
     private final Date lastPasswordResetDate;
+    private final Date createDate;
 
     public UserDetailsImple(Long id, String username, String password,
-                            Collection<? extends GrantedAuthority> authorities, Date lastPasswordResetDate) {
+                            Collection<? extends GrantedAuthority> authorities, Date lastPasswordResetDate,Date createDate) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
         this.lastPasswordResetDate = lastPasswordResetDate;
+        this.createDate = createDate;
     }
 
     public UserDetailsImple(User user){
@@ -34,6 +36,7 @@ public class UserDetailsImple implements UserDetails {
         }
         this.authorities = authorities;
         this.lastPasswordResetDate = user.getLastPasswordResetDate();
+        this.createDate = user.getCreateDate();
     }
 
     @Override
@@ -78,5 +81,13 @@ public class UserDetailsImple implements UserDetails {
     // 自定义，返回上次密码重置日期
     public Date getLastPasswordResetDate() {
         return lastPasswordResetDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
     }
 }

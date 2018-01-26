@@ -1,8 +1,10 @@
 package site.fish119.adminss.controller.profile;
 
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.fish119.adminss.service.setting.DepartService;
@@ -37,6 +39,17 @@ public class ProfilesController {
         if (!avatar.isEmpty()) {
             result.put("data", userService.changeAvatar(avatar));
         }
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/setting/profile/changePassword", method = RequestMethod.POST)
+    public ResponseEntity<?> changePassword(@RequestBody JSONObject reqBody){
+        Map<String, String> result = new HashMap<>();
+        String oldPassword = reqBody.getString("oldPassword");
+        String newPassword = reqBody.getString("newPassword");
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.changePassword(username,oldPassword,newPassword);
+        result.put("data", "SUCCESS");
         return ResponseEntity.ok(result);
     }
 

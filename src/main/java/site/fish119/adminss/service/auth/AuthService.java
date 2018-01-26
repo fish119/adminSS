@@ -40,8 +40,7 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        final String token = tokenUtil.generateToken(userDetails);
-        return token;
+        return tokenUtil.generateToken(userDetails);
     }
 
     public User register(AuthRequest requestUser) {

@@ -1,7 +1,5 @@
 package site.fish119.adminss.secruity;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Bean
     public AuthenticationEntryPoint unauthorizedEntryPoint() {
         return (request, response, authException) -> {
@@ -51,37 +47,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                // 设置UserDetailsService
                 .userDetailsService(this.userDetailsService)
-                // 使用BCrypt进行密码的hash
                 .passwordEncoder(passwordEncoder());
     }
 
-    // 装载BCrypt密码编码器
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    //允许跨域
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurerAdapter() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**").allowedOrigins("*")
-//                        .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
-//                        .allowedHeaders("Authorization")
-//                        .allowCredentials(false).maxAge(3600);
-//            }
-//        };
-//    }
-
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-////        web.ignoring().antMatchers("/**");
-////        web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui/**", "/swagger-resources/**", "/configuration/security/**", "/swagger-ui.html", "/webjars/**");
-//    }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -93,7 +66,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             cc.addAllowedMethod("*");
             return cc;
         });
-//        httpSecurity.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         httpSecurity
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint()).and()

@@ -2,16 +2,19 @@ package site.fish119.adminss.service.setting;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import site.fish119.adminss.utils.Constant;
-import site.fish119.adminss.utils.MainUtil;
 import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.repository.SysUserRepository;
 import site.fish119.adminss.secruity.UserDetailsImple;
+import site.fish119.adminss.utils.Constant;
+import site.fish119.adminss.utils.MainUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,16 +26,17 @@ import java.util.Date;
 public class UserService {
     @Autowired
     SysUserRepository userRepository;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Value("${web.upload-path}")
     private String avatarPath;
 
-    public Iterable<User> findAll(Integer page, Integer size, String sortColumn, String direction) {
+    private Iterable<User> findAll(Integer page, Integer size, String sortColumn, String direction) {
         return userRepository.findAll(MainUtil.getPageRequest(page, size, sortColumn, direction));
     }
 
     public Iterable<User> findUsers(String searchStr, Integer page, Integer size, String sortColumn, String direction) {
-//        LoggerFactory.getLogger(this.getClass()).info(username);
         if (searchStr.isEmpty()) {
             return this.findAll(page, size, sortColumn, direction);
         } else {
@@ -52,8 +56,10 @@ public class UserService {
             dbUser.setPhone(user.getPhone());
             userRepository.save(dbUser);
         } else {
+            Md5PasswordEncoder md5 = new Md5PasswordEncoder();
+            String result = md5.encodePassword(Constant.DEFAULT_PASSWORD,null);
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(Constant.DEFAULT_PASSWORD));
+            user.setPassword(encoder.encode(result));
             user.setLastPasswordResetDate(new Date());
             user.setCreateDate(new Date());
             userRepository.save(user);
@@ -63,8 +69,10 @@ public class UserService {
     @Transactional
     public void setDefaultPassword(Long id) {
         User user = userRepository.findOne(id);
+        Md5PasswordEncoder md5 = new Md5PasswordEncoder();
+        String result = md5.encodePassword(Constant.DEFAULT_PASSWORD,null);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        user.setPassword(encoder.encode(Constant.DEFAULT_PASSWORD));
+        user.setPassword(encoder.encode(result));
         user.setLastPasswordResetDate(new Date());
         userRepository.save(user);
     }
@@ -102,5 +110,16 @@ public class UserService {
                 StandardCopyOption.REPLACE_EXISTING);
         user.setAvatar(filename);
         return filename;
+    }
+
+    @Transactional
+    public void changePassword(String username,String oldPassword,String newPassword){
+        UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(username, oldPassword);
+        authenticationManager.authenticate(upToken);
+        User user = userRepository.findByUsername(username);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(newPassword));
+        user.setLastPasswordResetDate(new Date());
+        userRepository.save(user);
     }
 }

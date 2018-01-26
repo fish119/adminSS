@@ -1,22 +1,31 @@
 package site.fish119.adminss.service.setting;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.fish119.adminss.Utils.Constant;
-import site.fish119.adminss.Utils.MainUtil;
+import org.springframework.web.multipart.MultipartFile;
+import site.fish119.adminss.utils.Constant;
+import site.fish119.adminss.utils.MainUtil;
 import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.repository.SysUserRepository;
 import site.fish119.adminss.secruity.UserDetailsImple;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 
 @Service
 public class UserService {
     @Autowired
     SysUserRepository userRepository;
+
+    @Value("${web.upload-path}")
+    private String avatarPath;
 
     public Iterable<User> findAll(Integer page, Integer size, String sortColumn, String direction) {
         return userRepository.findAll(MainUtil.getPageRequest(page, size, sortColumn, direction));
@@ -83,5 +92,15 @@ public class UserService {
 
     public User findCurrentUser(){
         return userRepository.findOne(((UserDetailsImple) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+    }
+
+    @Transactional
+    public String changeAvatar(MultipartFile file) throws IOException {
+        User user = findCurrentUser();
+        String filename = user.getId() +".png";
+        Files.copy(file.getInputStream(), Paths.get(avatarPath+"avatar/").resolve(filename),
+                StandardCopyOption.REPLACE_EXISTING);
+        user.setAvatar(filename);
+        return filename;
     }
 }

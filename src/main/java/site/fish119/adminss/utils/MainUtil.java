@@ -1,4 +1,4 @@
-package site.fish119.adminss.Utils;
+package site.fish119.adminss.utils;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import site.fish119.adminss.Utils.MainUtil;
+import site.fish119.adminss.utils.MainUtil;
 import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.repository.SysMenuRepository;
 import site.fish119.adminss.repository.SysUserRepository;

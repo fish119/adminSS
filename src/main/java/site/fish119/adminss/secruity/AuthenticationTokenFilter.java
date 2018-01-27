@@ -1,6 +1,8 @@
 package site.fish119.adminss.secruity;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +21,7 @@ import java.io.IOException;
 
 @Component
 public class AuthenticationTokenFilter extends OncePerRequestFilter {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private UserDetailsServiceImple userDetailsService;
 
@@ -32,7 +35,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
             try {
                 final String authToken = authHeader.substring(AuthConstant.tokenPrefix.length());
                 String username = jwtTokenUtil.getUsernameFromToken(authToken);
-                logger.info("checking authentication : " + username);
+                logger.debug("checking authentication {} from {}",username,request.getRequestURI());
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     if (jwtTokenUtil.validateToken(authToken, userDetails)) {

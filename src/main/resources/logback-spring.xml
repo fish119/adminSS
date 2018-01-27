@@ -11,6 +11,5 @@
     </appender>
     <root level="INFO">
         <appender-ref ref="db" />
-        <appender-ref ref="CONSOLE" />
     </root>
 </configuration>

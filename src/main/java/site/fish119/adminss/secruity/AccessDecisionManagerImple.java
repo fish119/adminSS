@@ -28,6 +28,7 @@ public class AccessDecisionManagerImple implements AccessDecisionManager {
         String method;
         AntPathRequestMatcher matcher;
         if (url.contains("/swagger") ||
+                url.contains("/druid")||
                 url.contains("/api-docs") ||
                 url.contains("/swagger-resources") ||
                 url.contains("/auth") ||

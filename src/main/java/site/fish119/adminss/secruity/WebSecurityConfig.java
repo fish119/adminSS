@@ -95,5 +95,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.addFilterBefore(securityInterceptor, FilterSecurityInterceptor.class);
         // 禁用缓存
         httpSecurity.headers().cacheControl().disable();
+        //允许iFrame
+        httpSecurity.headers().frameOptions().disable();
     }
 }

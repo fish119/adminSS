@@ -141,6 +141,10 @@
             <artifactId>spring-boot-admin-starter-client</artifactId>
             <version>1.5.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

@@ -32,6 +32,20 @@ public class AccessDecisionManagerImple implements AccessDecisionManager {
                 url.contains("/api-docs") ||
                 url.contains("/swagger-resources") ||
                 url.contains("/auth") ||
+                url.contains("/SPA") ||
+                url.contains("/health") ||
+                url.contains("/info") ||
+                url.contains("/metrics") ||
+                url.contains("/logfile") ||
+                url.contains("/trace") ||
+                url.contains("/env") ||
+                url.contains("/loggers") ||
+                url.contains("/jolokia") ||
+                url.contains("/auditevents") ||
+                url.contains("/dump") ||
+                url.contains("/liquibase") ||
+                url.contains("/flyway") ||
+                url.contains("/journal") ||
                 url.contains(".html") ||
                 url.contains(".css") ||
                 url.contains(".js") ||

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import site.fish119.adminss.domain.article.Article;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -57,6 +58,11 @@ public class User implements Serializable {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Column(nullable = false)
     private Date createDate;
+
+    @OneToMany(fetch= FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name="author_id")
+    @JsonIgnore
+    private Set<Article> articles;
 
     @Override
     public int hashCode() {

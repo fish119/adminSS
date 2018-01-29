@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.fish119.adminss.domain.sys.Department;
-import site.fish119.adminss.repository.SysDepartmentRepository;
+import site.fish119.adminss.repository.sys.SysDepartmentRepository;
 
 import java.util.List;
 

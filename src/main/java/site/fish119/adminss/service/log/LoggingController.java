@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.fish119.adminss.domain.log.Logging_event;
-import site.fish119.adminss.repository.LoggingRepository;
+import site.fish119.adminss.repository.sys.LoggingRepository;
 import site.fish119.adminss.secruity.UserDetailsImple;
 import site.fish119.adminss.utils.MainUtil;
 
@@ -43,9 +43,9 @@ public class LoggingController {
         Iterable<Logging_event> logging_events;
         Pageable pageable = MainUtil.getPageRequest(page, size, sortColumn, direction);
         if (level != null) {
-            logging_events = loggingRepository.findByLevelStringEqualsAndCallerFilenameContainsOrLevelStringEqualsAndCallerMethodContains(level, searchStr, level,searchStr, pageable);
+            logging_events = loggingRepository.searchLogs(level,searchStr,pageable);
         } else {
-            logging_events = loggingRepository.findByCallerFilenameIgnoreCaseContainingOrCallerMethodIgnoreCaseContaining(searchStr, searchStr, pageable);
+            logging_events = loggingRepository.findByArg1ContainsOrFormattedMessageContainsOrLoggerNameContains(searchStr, searchStr, searchStr, pageable);
         }
         result.put("data", logging_events);
         return ResponseEntity.ok(result);
@@ -53,10 +53,10 @@ public class LoggingController {
 
     @RequestMapping(value = "/logs", method = RequestMethod.DELETE)
     @Transactional
-    public ResponseEntity<?> deleteAllLogs(){
+    public ResponseEntity<?> deleteAllLogs() {
         Map<String, Object> result = new HashMap<>();
         loggingRepository.deleteAll();
-        LoggerFactory.getLogger(this.getClass()).info("删除所有日志",((UserDetailsImple) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId(),new Date());
+        LoggerFactory.getLogger(this.getClass()).info("删除所有日志", ((UserDetailsImple) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId(), new Date());
         result.put("data", "SUCCESS");
         return ResponseEntity.ok(result);
     }

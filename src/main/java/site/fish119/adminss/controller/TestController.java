@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import site.fish119.adminss.domain.sys.User;
-import site.fish119.adminss.repository.SysUserRepository;
+import site.fish119.adminss.repository.sys.SysUserRepository;
 
 @RestController
 //@Api(description = "Test", name = "Test")

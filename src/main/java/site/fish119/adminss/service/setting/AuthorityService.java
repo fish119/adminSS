@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.fish119.adminss.domain.sys.Authority;
-import site.fish119.adminss.repository.SysAuthorityRepository;
+import site.fish119.adminss.repository.sys.SysAuthorityRepository;
 
 import java.util.HashSet;
 import java.util.List;

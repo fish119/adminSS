@@ -1,4 +1,4 @@
-package site.fish119.adminss.repository;
+package site.fish119.adminss.repository.sys;
 
 import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;

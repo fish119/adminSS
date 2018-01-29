@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import site.fish119.adminss.utils.MainUtil;
 import site.fish119.adminss.domain.sys.Menu;
 import site.fish119.adminss.domain.sys.User;
-import site.fish119.adminss.repository.SysMenuRepository;
-import site.fish119.adminss.repository.SysUserRepository;
+import site.fish119.adminss.repository.sys.SysMenuRepository;
+import site.fish119.adminss.repository.sys.SysUserRepository;
 import site.fish119.adminss.secruity.UserDetailsImple;
 
 import java.util.HashSet;

@@ -1,13 +1,24 @@
 package site.fish119.adminss.service.article;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import site.fish119.adminss.domain.article.Article;
 import site.fish119.adminss.domain.article.Category;
+import site.fish119.adminss.repository.article.ArticleRepository;
 import site.fish119.adminss.repository.article.CategoryRepository;
+import site.fish119.adminss.utils.MainUtil;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @Project adminss
@@ -20,6 +31,11 @@ import java.util.List;
 public class ArticleService {
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private ArticleRepository articleRepository;
+
+    @Value("${web.upload-path}")
+    private String uploadPath;
 
     public List<Category> findAllCategories() {
         return categoryRepository.findByParentIsNullOrderBySortAsc();
@@ -64,5 +80,18 @@ public class ArticleService {
             dbCategory.setParent(null);
         }
         categoryRepository.delete(id);
+    }
+
+    public Iterable<Article> findArticles(Long id,String searchStr,Integer page,Integer size,String sortColumn,String direction){
+        Pageable pageable = MainUtil.getPageRequest(page, size, sortColumn, direction);
+        return articleRepository.findByCategory_IdAndTitleIgnoreCaseContains(id,searchStr,pageable);
+    }
+
+    @Transactional
+    public String saveImage(MultipartFile file) throws IOException {
+        String filename = UUID.randomUUID() +".png";
+        Files.copy(file.getInputStream(), Paths.get(uploadPath+"article/").resolve(filename),
+                StandardCopyOption.REPLACE_EXISTING);
+        return filename;
     }
 }

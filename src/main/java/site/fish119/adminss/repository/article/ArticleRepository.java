@@ -1,5 +1,7 @@
 package site.fish119.adminss.repository.article;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import site.fish119.adminss.domain.article.Article;
@@ -13,4 +15,5 @@ import site.fish119.adminss.domain.article.Article;
  */
 @Repository
 public interface ArticleRepository extends JpaRepository<Article,Long> {
+    Page<Article> findByCategory_IdAndTitleIgnoreCaseContains(Long id, String title, Pageable pageable);
 }

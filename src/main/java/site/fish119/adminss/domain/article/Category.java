@@ -1,6 +1,7 @@
 package site.fish119.adminss.domain.article;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -31,6 +32,7 @@ public class Category implements Serializable {
 
     @OneToMany(fetch= FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name="category_id")
+    @JsonIgnore
     private Set<Article> articles;
 
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)

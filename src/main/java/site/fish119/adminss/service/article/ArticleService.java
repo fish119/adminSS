@@ -3,6 +3,7 @@ package site.fish119.adminss.service.article;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,6 +11,8 @@ import site.fish119.adminss.domain.article.Article;
 import site.fish119.adminss.domain.article.Category;
 import site.fish119.adminss.repository.article.ArticleRepository;
 import site.fish119.adminss.repository.article.CategoryRepository;
+import site.fish119.adminss.repository.sys.SysUserRepository;
+import site.fish119.adminss.secruity.UserDetailsImple;
 import site.fish119.adminss.utils.MainUtil;
 
 import java.io.IOException;
@@ -33,6 +36,8 @@ public class ArticleService {
     private CategoryRepository categoryRepository;
     @Autowired
     private ArticleRepository articleRepository;
+    @Autowired
+    SysUserRepository userRepository;
 
     @Value("${web.upload-path}")
     private String uploadPath;
@@ -82,16 +87,37 @@ public class ArticleService {
         categoryRepository.delete(id);
     }
 
-    public Iterable<Article> findArticles(Long id,String searchStr,Integer page,Integer size,String sortColumn,String direction){
+    public Iterable<Article> findArticles(Long id, String searchStr, Integer page, Integer size, String sortColumn, String direction) {
         Pageable pageable = MainUtil.getPageRequest(page, size, sortColumn, direction);
-        return articleRepository.findByCategory_IdAndTitleIgnoreCaseContains(id,searchStr,pageable);
+        if(id==null){
+            return articleRepository.findByTitleIgnoreCaseContains(searchStr,pageable);
+        }else {
+            return articleRepository.findByCategory_IdAndTitleIgnoreCaseContains(id, searchStr, pageable);
+        }
     }
 
     @Transactional
     public String saveImage(MultipartFile file) throws IOException {
-        String filename = UUID.randomUUID() +".png";
-        Files.copy(file.getInputStream(), Paths.get(uploadPath+"article/").resolve(filename),
+        String filename = UUID.randomUUID() + ".png";
+        Files.copy(file.getInputStream(), Paths.get(uploadPath + "article/").resolve(filename),
                 StandardCopyOption.REPLACE_EXISTING);
         return filename;
+    }
+
+    @Transactional
+    public Article saveArticle(Long categoryId, Article article) {
+        String username = ((UserDetailsImple) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        article.setAuthor(userRepository.findByUsername(username));
+        article.setCategory(categoryRepository.findOne(categoryId));
+        if (article.getId() == null) {
+            article.setCreateTime(new Date());
+        }
+        article.setLastChangeTime(new Date());
+        return articleRepository.save(article);
+    }
+
+    @Transactional
+    public void delArticle(Long id){
+        articleRepository.delete(id);
     }
 }

@@ -66,11 +66,10 @@ public class WebLogAspect {
         String message;
         try{
             message = ((ResponseEntity)ret).getStatusCodeValue()+"::"+((ResponseEntity)ret).getStatusCode().name();
-            message += "::"+(System.currentTimeMillis() - lt.getStartTime());
         }catch (Exception e){
             message = ret.toString();
         }
-        logger.info(message, lt.getUserId(), lt.getHttpMethod() + "::" + lt.getUrl(), lt.getArgs(), lt.getIp());
+        logger.info(message, lt.getUserId(), lt.getHttpMethod() + "::" + lt.getUrl(), System.currentTimeMillis() - lt.getStartTime(), lt.getIp());
     }
 
     private String getIpAddress(HttpServletRequest request){

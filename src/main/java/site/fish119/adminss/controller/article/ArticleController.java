@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import site.fish119.adminss.domain.article.Article;
 import site.fish119.adminss.domain.article.Category;
 import site.fish119.adminss.service.article.ArticleService;
 
@@ -42,10 +43,10 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "/article/categories/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> delCategory(@PathVariable("id") long id){
+    public ResponseEntity<?> delCategory(@PathVariable("id") long id) {
         Map<String, Object> result = new HashMap<>();
         articleService.delCategory(id);
-        result.put("data",articleService.findAllCategories());
+        result.put("data", articleService.findAllCategories());
         return ResponseEntity.ok(result);
     }
 
@@ -59,20 +60,27 @@ public class ArticleController {
             @RequestParam(name = "direction", required = false) String direction) {
         Map<String, Object> result = new HashMap<>();
         result.put("articles", articleService.findArticles(categoryId, searchStr, page, size, sortColumn, direction));
-        result.put("categories",articleService.findAllCategories());
+        result.put("categories", articleService.findAllCategories());
         return ResponseEntity.ok(result);
     }
 
     @RequestMapping(value = "/article/imageUpload", method = RequestMethod.POST)
-    public ResponseEntity<?> setAvatar(HttpServletRequest request, @RequestParam("image") MultipartFile image) throws IOException {
+    public ResponseEntity<?> saveImage(HttpServletRequest request, @RequestParam("image") MultipartFile image) throws IOException {
         Map<String, Object> result = new HashMap<>();
         if (!image.isEmpty()) {
-            String imgUrl = "http://"+request.getLocalName()+":"+request.getLocalPort();
-            imgUrl += "/article/"+articleService.saveImage(image);
+            String imgUrl = "http://" + request.getLocalName() + ":" + request.getLocalPort();
+            imgUrl += "/article/" + articleService.saveImage(image);
             LoggerFactory.getLogger(getClass()).info(imgUrl);
             result.put("data", imgUrl);
-            result.put("ok",true);
+            result.put("ok", true);
         }
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/article/articles", method = RequestMethod.POST)
+    public ResponseEntity<?> saveDepartment(@RequestBody JSONObject reqBody) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", articleService.saveArticle(reqBody.getLong("categoryId"), reqBody.getObject("article", Article.class)));
         return ResponseEntity.ok(result);
     }
 
@@ -81,8 +89,16 @@ public class ArticleController {
         exc.printStackTrace();
         LoggerFactory.getLogger(this.getClass()).error(exc.getLocalizedMessage());
         Map<String, Object> result = new HashMap<>();
-        result.put("ok",false);
-        result.put("msg",exc.getLocalizedMessage());
+        result.put("ok", false);
+        result.put("msg", exc.getLocalizedMessage());
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/article/articles/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> delArticle(@PathVariable("id") long id) {
+        Map<String, String> result = new HashMap<>();
+        articleService.delArticle(id);
+        result.put("data", "OK");
         return ResponseEntity.ok(result);
     }
 }

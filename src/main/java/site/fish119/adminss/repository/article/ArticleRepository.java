@@ -16,4 +16,5 @@ import site.fish119.adminss.domain.article.Article;
 @Repository
 public interface ArticleRepository extends JpaRepository<Article,Long> {
     Page<Article> findByCategory_IdAndTitleIgnoreCaseContains(Long id, String title, Pageable pageable);
+    Page<Article> findByTitleIgnoreCaseContains(String title, Pageable pageable);
 }

@@ -19,28 +19,29 @@ public class DepartService {
 
     @Transactional
     public void save(Long parentId, Department depart) {
-        Department dbDepart = depart.getId() == null ? depart : departmentRepository.findOne(depart.getId());
-        Department oldParent = dbDepart.getParent();
+        Department dbDepartment = depart.getId() == null ? depart : departmentRepository.findOne(depart.getId());
+        Department oldParent = dbDepartment.getParent();
         if (parentId != null) {
-            Department parentDepart = departmentRepository.findOne(parentId);
+            Department parentDepartment = departmentRepository.findOne(parentId);
             if (oldParent != null && !oldParent.getId().equals(parentId)) {
-                dbDepart.getParent().getChildren().remove(dbDepart);
+                dbDepartment.getParent().getChildren().remove(dbDepartment);
                 departmentRepository.saveAndFlush(oldParent);
             }
-            dbDepart.setParent(parentDepart);
-            parentDepart.getChildren().add(dbDepart);
+            dbDepartment.setParent(parentDepartment);
+            parentDepartment.getChildren().add(dbDepartment);
         } else {
             if (oldParent != null) {
-                dbDepart.getParent().getChildren().remove(dbDepart);
+                dbDepartment.getParent().getChildren().remove(dbDepartment);
                 departmentRepository.saveAndFlush(oldParent);
             }
+            dbDepartment.setParent(null);
         }
 
-        dbDepart.setName(depart.getName());
-        dbDepart.setSort(depart.getSort());
-        departmentRepository.saveAndFlush(dbDepart);
-        if(dbDepart.getParent()!=null){
-            departmentRepository.saveAndFlush(dbDepart.getParent());
+        dbDepartment.setName(depart.getName());
+        dbDepartment.setSort(depart.getSort());
+        departmentRepository.saveAndFlush(dbDepartment);
+        if (dbDepartment.getParent() != null) {
+            departmentRepository.saveAndFlush(dbDepartment.getParent());
         }
     }
 

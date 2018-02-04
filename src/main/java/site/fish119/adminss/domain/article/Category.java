@@ -18,7 +18,7 @@ import java.util.Set;
  * @Date 2018/1/28 16:29
  * @Version V1.0
  */
-@EqualsAndHashCode(of = {"id"}, callSuper = true)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "article_category")
 @Data

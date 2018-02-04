@@ -14,7 +14,7 @@ public class MainUtil {
         for (Menu menu : menus) {
             for (Role role : roles) {
                 menu.getChildren().removeIf(
-                        subMenu -> subMenu.getmRoles().isEmpty() || !subMenu.getmRoles().contains(role)
+                        subMenu -> subMenu.getMRoles().isEmpty() || !subMenu.getMRoles().contains(role)
                 );
             }
         }

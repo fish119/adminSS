@@ -46,7 +46,7 @@ public class UserService {
 
     @Transactional
     public void save(User user) {
-        if (user.getId() != null) {
+        if (user.getId() != null && userRepository.findOne(user.getId())!=null) {
             User dbUser = userRepository.findOne(user.getId());
             dbUser.setUsername(user.getUsername());
             dbUser.setRoles(user.getRoles());
@@ -61,7 +61,6 @@ public class UserService {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setPassword(encoder.encode(result));
             user.setLastPasswordResetDate(new Date());
-            user.setCreateDate(new Date());
             userRepository.save(user);
         }
     }

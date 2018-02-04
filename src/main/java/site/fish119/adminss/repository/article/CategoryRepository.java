@@ -13,5 +13,6 @@ import java.util.List;
  * @Version V1.0
  */
 public interface CategoryRepository extends JpaRepository<Category,Long>{
+
     List<Category> findByParentIsNullOrderBySortAsc();
 }

@@ -14,16 +14,18 @@ public class UserDetailsImple implements UserDetails {
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
     private final Date lastPasswordResetDate;
-    private final Date createDate;
+    private final Date createTime;
+    private final Date updateTime;
 
     public UserDetailsImple(Long id, String username, String password,
-                            Collection<? extends GrantedAuthority> authorities, Date lastPasswordResetDate,Date createDate) {
+                            Collection<? extends GrantedAuthority> authorities, Date lastPasswordResetDate,Date createTime,Date updateTime) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
         this.lastPasswordResetDate = lastPasswordResetDate;
-        this.createDate = createDate;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public UserDetailsImple(User user){
@@ -36,7 +38,8 @@ public class UserDetailsImple implements UserDetails {
         }
         this.authorities = authorities;
         this.lastPasswordResetDate = user.getLastPasswordResetDate();
-        this.createDate = user.getCreateDate();
+        this.createTime = user.getCreateTime();
+        this.updateTime = user.getUpdateTime();
     }
 
     @Override
@@ -87,7 +90,11 @@ public class UserDetailsImple implements UserDetails {
         return id;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
     }
 }

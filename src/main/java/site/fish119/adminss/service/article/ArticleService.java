@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,6 +42,7 @@ public class ArticleService {
     private String uploadPath;
 
     public List<Category> findAllCategories() {
+        categoryRepository.flush();
         return categoryRepository.findByParentIsNullOrderBySortAsc();
     }
 
@@ -50,9 +50,6 @@ public class ArticleService {
     public void saveCategory(Long parentId, Category category) {
         Category dbCategory = category.getId() == null ? category : categoryRepository.findOne(category.getId());
         Category oldParent = dbCategory.getParent();
-        if (category.getId() == null) {
-            dbCategory.setCreateTime(new Date());
-        }
         if (parentId != null) {
             Category parentCategory = categoryRepository.findOne(parentId);
             if (oldParent != null && !oldParent.getId().equals(parentId)) {
@@ -66,6 +63,7 @@ public class ArticleService {
                 dbCategory.getParent().getChildren().remove(dbCategory);
                 categoryRepository.saveAndFlush(oldParent);
             }
+            dbCategory.setParent(null);
         }
 
         dbCategory.setName(category.getName());
@@ -109,10 +107,6 @@ public class ArticleService {
         String username = ((UserDetailsImple) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         article.setAuthor(userRepository.findByUsername(username));
         article.setCategory(categoryRepository.findOne(categoryId));
-        if (article.getId() == null) {
-            article.setCreateTime(new Date());
-        }
-        article.setLastChangeTime(new Date());
         return articleRepository.save(article);
     }
 

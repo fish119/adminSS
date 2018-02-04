@@ -1,26 +1,21 @@
 package site.fish119.adminss.domain.sys;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.EqualsAndHashCode;
+import site.fish119.adminss.domain.BaseEntity;
 import site.fish119.adminss.domain.article.Article;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
+@EqualsAndHashCode(of = {"id"}, callSuper = true)
 @Entity
 @Table(name = "sys_user")
 @Data
-public class User implements Serializable {
+public class User extends BaseEntity {
     private static final long serialVersionUID = -1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -29,8 +24,6 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String password;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date lastPasswordResetDate;
 
     private String avatar;
@@ -41,7 +34,7 @@ public class User implements Serializable {
     @Column(nullable = false, unique = true)
     private String phone;
 
-    @Column(unique = true)
+    @Column(unique = true,nullable = true)
     private String email;
 
     @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER)
@@ -54,28 +47,8 @@ public class User implements Serializable {
     @JoinColumn(name="dept_id")
     private Department department;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @Column(nullable = false)
-    private Date createDate;
-
     @OneToMany(fetch= FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name="author_id")
     @JsonIgnore
     private Set<Article> articles;
-
-    @Override
-    public int hashCode() {
-        if(getId()!=null){
-            return getId().hashCode();
-        }
-        else{
-            return -1;
-        }
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return this.getId().equals(((User) obj).getId());
-    }
 }

@@ -1,20 +1,19 @@
 package site.fish119.adminss.domain.sys;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import site.fish119.adminss.domain.BaseEntity;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
+@EqualsAndHashCode(of = {"id"}, callSuper = true)
 @Entity()
 @Table(name = "sys_role")
-public class Role implements Serializable  {
+@Data
+public class Role extends BaseEntity {
     private static final long serialVersionUID = -1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -39,52 +38,4 @@ public class Role implements Serializable  {
             inverseJoinColumns = @JoinColumn(name = "MENU_ID"))
     @OrderBy("sort ASC")
     private Set<Menu> menus = new HashSet<>(0);
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getSort() {
-        return sort;
-    }
-
-    public void setSort(Long sort) {
-        this.sort = sort;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    public Set<Authority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
-    }
-
-    public Set<Menu> getMenus() {
-        return menus;
-    }
-
-    public void setMenus(Set<Menu> menus) {
-        this.menus = menus;
-    }
 }

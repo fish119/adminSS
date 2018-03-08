@@ -12,7 +12,7 @@ import site.fish119.adminss.domain.article.Category;
 import site.fish119.adminss.repository.article.ArticleRepository;
 import site.fish119.adminss.repository.article.CategoryRepository;
 import site.fish119.adminss.repository.sys.SysUserRepository;
-import site.fish119.adminss.secruity.UserDetailsImple;
+import site.fish119.adminss.security.UserDetailsImple;
 import site.fish119.adminss.utils.MainUtil;
 
 import java.io.IOException;

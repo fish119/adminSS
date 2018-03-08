@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import site.fish119.adminss.domain.sys.User;
-import site.fish119.adminss.secruity.AuthConstant;
-import site.fish119.adminss.secruity.AuthRequest;
+import site.fish119.adminss.security.AuthConstant;
+import site.fish119.adminss.security.AuthRequest;
 import site.fish119.adminss.service.auth.AuthService;
 
 import javax.servlet.http.HttpServletRequest;

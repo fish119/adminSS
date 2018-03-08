@@ -1,7 +1,5 @@
-package site.fish119.adminss.secruity;
+package site.fish119.adminss.security;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -18,7 +16,7 @@ import java.util.Collection;
 
 @Service
 public class AccessDecisionManagerImple implements AccessDecisionManager {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+//    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     //decide 方法是判定是否拥有权限的决策方法
     @Override

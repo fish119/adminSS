@@ -1,6 +1,4 @@
-package site.fish119.adminss.secruity;
-
-import javax.servlet.*;
+package site.fish119.adminss.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.SecurityMetadataSource;
@@ -10,12 +8,17 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.*;
 import java.io.IOException;
 
 @Service
 public class SecurityInterceptorImple extends AbstractSecurityInterceptor implements Filter {
     @Autowired
-    private FilterInvocationSecurityMetadataSourceImple securityMetadataSource;
+    public SecurityInterceptorImple(FilterInvocationSecurityMetadataSourceImple securityMetadataSource) {
+        this.securityMetadataSource = securityMetadataSource;
+    }
+
+    private final FilterInvocationSecurityMetadataSourceImple securityMetadataSource;
 
     @Autowired
     public void setAccessDecisionManager(AccessDecisionManagerImple accessDecisionManager) {

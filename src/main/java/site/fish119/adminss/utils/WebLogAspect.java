@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import site.fish119.adminss.secruity.UserDetailsImple;
+import site.fish119.adminss.security.UserDetailsImple;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;

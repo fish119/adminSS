@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.repository.sys.SysRoleRepository;
 import site.fish119.adminss.repository.sys.SysUserRepository;
-import site.fish119.adminss.secruity.AuthConstant;
-import site.fish119.adminss.secruity.AuthRequest;
-import site.fish119.adminss.secruity.TokenUtil;
-import site.fish119.adminss.secruity.UserDetailsImple;
+import site.fish119.adminss.security.AuthConstant;
+import site.fish119.adminss.security.AuthRequest;
+import site.fish119.adminss.security.TokenUtil;
+import site.fish119.adminss.security.UserDetailsImple;
 
 import java.util.Date;
 import java.util.HashSet;

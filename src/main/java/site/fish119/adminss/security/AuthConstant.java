@@ -1,4 +1,4 @@
-package site.fish119.adminss.secruity;
+package site.fish119.adminss.security;
 
 public class AuthConstant {
     public static final String tokenHeader = "Authorization";

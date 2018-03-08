@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import site.fish119.adminss.domain.sys.QUser;
 import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.repository.sys.SysUserRepository;
-import site.fish119.adminss.secruity.UserDetailsImple;
+import site.fish119.adminss.security.UserDetailsImple;
 import site.fish119.adminss.utils.Constant;
 import site.fish119.adminss.utils.MainUtil;
 

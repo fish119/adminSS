@@ -1,4 +1,4 @@
-package site.fish119.adminss.secruity;
+package site.fish119.adminss.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +23,16 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    public WebSecurityConfig(UserDetailsServiceImple userDetailsService, SecurityInterceptorImple securityInterceptor) {
+        this.userDetailsService = userDetailsService;
+        this.securityInterceptor = securityInterceptor;
+    }
+
+    private final UserDetailsServiceImple userDetailsService;
+
+    private final SecurityInterceptorImple securityInterceptor;
+
     @Bean
     public AuthenticationEntryPoint unauthorizedEntryPoint() {
         return (request, response, authException) -> {
@@ -31,13 +41,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             }
         };
     }
-
-
-    @Autowired
-    private UserDetailsServiceImple userDetailsService;
-
-    @Autowired
-    private SecurityInterceptorImple securityInterceptor;
 
     @Bean
     public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
@@ -58,9 +61,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        /**
-         * important 跨域配置，重要！
-         **/
+
+        //important 跨域配置，重要！
         httpSecurity.cors().configurationSource(httpServletRequest -> {
             CorsConfiguration cc = new CorsConfiguration().applyPermitDefaultValues();
             cc.addAllowedMethod("*");

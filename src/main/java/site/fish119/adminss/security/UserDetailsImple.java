@@ -1,4 +1,4 @@
-package site.fish119.adminss.secruity;
+package site.fish119.adminss.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

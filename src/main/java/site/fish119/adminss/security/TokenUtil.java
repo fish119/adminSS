@@ -1,4 +1,4 @@
-package site.fish119.adminss.secruity;
+package site.fish119.adminss.security;
 
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Component
 public class TokenUtil implements Serializable {
-    Logger logger  = LoggerFactory.getLogger(this.getClass());
+    private Logger logger  = LoggerFactory.getLogger(this.getClass());
     private static final long serialVersionUID = -1L;
 
     public String getUsernameFromToken(String token) throws AuthenticationException {

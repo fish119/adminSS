@@ -1,4 +1,4 @@
-package site.fish119.adminss.secruity;
+package site.fish119.adminss.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;

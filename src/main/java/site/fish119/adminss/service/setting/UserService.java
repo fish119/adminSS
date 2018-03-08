@@ -1,5 +1,6 @@
 package site.fish119.adminss.service.setting;
 
+import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import site.fish119.adminss.domain.sys.QUser;
 import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.repository.sys.SysUserRepository;
 import site.fish119.adminss.secruity.UserDetailsImple;
@@ -40,13 +42,18 @@ public class UserService {
         if (searchStr.isEmpty()) {
             return this.findAll(page, size, sortColumn, direction);
         } else {
-            return userRepository.findByUsernameIgnoreCaseContainingOrNicknameIgnoreCaseContainingOrPhoneIgnoreCaseContainingOrEmailIgnoreCaseContaining(searchStr, searchStr, searchStr, searchStr, MainUtil.getPageRequest(page, size, sortColumn, direction));
+            QUser qUser = QUser.user;
+            Predicate predicate = qUser.username.containsIgnoreCase(searchStr)
+                    .or(qUser.nickname.containsIgnoreCase(searchStr))
+                    .or(qUser.phone.containsIgnoreCase(searchStr))
+                    .or(qUser.email.containsIgnoreCase(searchStr));
+            return userRepository.findAll(predicate, MainUtil.getPageRequest(page, size, sortColumn, direction));
         }
     }
 
     @Transactional
     public void save(User user) {
-        if (user.getId() != null && userRepository.findOne(user.getId())!=null) {
+        if (user.getId() != null && userRepository.findOne(user.getId()) != null) {
             User dbUser = userRepository.findOne(user.getId());
             dbUser.setUsername(user.getUsername());
             dbUser.setRoles(user.getRoles());
@@ -57,7 +64,7 @@ public class UserService {
             userRepository.save(dbUser);
         } else {
             Md5PasswordEncoder md5 = new Md5PasswordEncoder();
-            String result = md5.encodePassword(Constant.DEFAULT_PASSWORD,null);
+            String result = md5.encodePassword(Constant.DEFAULT_PASSWORD, null);
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setPassword(encoder.encode(result));
             user.setLastPasswordResetDate(new Date());
@@ -69,7 +76,7 @@ public class UserService {
     public void setDefaultPassword(Long id) {
         User user = userRepository.findOne(id);
         Md5PasswordEncoder md5 = new Md5PasswordEncoder();
-        String result = md5.encodePassword(Constant.DEFAULT_PASSWORD,null);
+        String result = md5.encodePassword(Constant.DEFAULT_PASSWORD, null);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(result));
         user.setLastPasswordResetDate(new Date());
@@ -97,22 +104,22 @@ public class UserService {
         return userRepository.findFirstByEmailAndIdNot(email, id) == null;
     }
 
-    public User findCurrentUser(){
+    public User findCurrentUser() {
         return userRepository.findOne(((UserDetailsImple) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
     }
 
     @Transactional
     public String changeAvatar(MultipartFile file) throws IOException {
         User user = findCurrentUser();
-        String filename = user.getId() +".png";
-        Files.copy(file.getInputStream(), Paths.get(avatarPath+"avatar/").resolve(filename),
+        String filename = user.getId() + ".png";
+        Files.copy(file.getInputStream(), Paths.get(avatarPath + "avatar/").resolve(filename),
                 StandardCopyOption.REPLACE_EXISTING);
         user.setAvatar(filename);
         return filename;
     }
 
     @Transactional
-    public void changePassword(String username,String oldPassword,String newPassword){
+    public void changePassword(String username, String oldPassword, String newPassword) {
         UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(username, oldPassword);
         authenticationManager.authenticate(upToken);
         User user = userRepository.findByUsername(username);

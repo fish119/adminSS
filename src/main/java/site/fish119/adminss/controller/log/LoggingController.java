@@ -2,7 +2,6 @@ package site.fish119.adminss.controller.log;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,10 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import site.fish119.adminss.domain.log.Logging_event;
-import site.fish119.adminss.repository.sys.LoggingRepository;
 import site.fish119.adminss.secruity.UserDetailsImple;
-import site.fish119.adminss.utils.MainUtil;
+import site.fish119.adminss.service.log.LogginService;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -29,7 +26,7 @@ import java.util.Map;
 @RestController
 public class LoggingController {
     @Autowired
-    private LoggingRepository loggingRepository;
+    private LogginService logginService;
 
     @RequestMapping(value = "/logs", method = RequestMethod.GET)
     public ResponseEntity<?> getPageAndSortUsers(
@@ -40,14 +37,7 @@ public class LoggingController {
             @RequestParam(name = "sortColumn", required = false) String sortColumn,
             @RequestParam(name = "direction", required = false) String direction) {
         Map<String, Object> result = new HashMap<>();
-        Iterable<Logging_event> logging_events;
-        Pageable pageable = MainUtil.getPageRequest(page, size, sortColumn, direction);
-        if (level != null) {
-            logging_events = loggingRepository.searchLogs(level,searchStr,pageable);
-        } else {
-            logging_events = loggingRepository.findByArg1ContainsOrFormattedMessageContainsOrLoggerNameContains(searchStr, searchStr, searchStr, pageable);
-        }
-        result.put("data", logging_events);
+        result.put("data", logginService.searchLogs(level, searchStr, page, size, sortColumn, direction));
         return ResponseEntity.ok(result);
     }
 
@@ -55,7 +45,7 @@ public class LoggingController {
     @Transactional
     public ResponseEntity<?> deleteAllLogs() {
         Map<String, Object> result = new HashMap<>();
-        loggingRepository.deleteAll();
+        logginService.deleteAll();
         LoggerFactory.getLogger(this.getClass()).info("删除所有日志", ((UserDetailsImple) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId(), new Date());
         result.put("data", "SUCCESS");
         return ResponseEntity.ok(result);

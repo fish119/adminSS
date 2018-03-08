@@ -19,8 +19,13 @@ import java.util.HashMap;
 
 @RestController
 public class AuthController {
+
+    private final AuthService service;
+
     @Autowired
-    AuthService service;
+    public AuthController(AuthService service) {
+        this.service = service;
+    }
 
     @RequestMapping(value = "/auth", method = RequestMethod.POST)
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
@@ -43,9 +48,9 @@ public class AuthController {
     @RequestMapping(value = "/auth/refresh", method = RequestMethod.GET)
     public ResponseEntity<?> refreshAndGetAuthenticationToken(HttpServletRequest request) throws AuthenticationException {
         HashMap<String, String> map = new HashMap<>();
-        if(StringUtils.isEmpty(request.getHeader(AuthConstant.tokenHeader))){
-            map.put("error","old token is null");
-        }else {
+        if (StringUtils.isEmpty(request.getHeader(AuthConstant.tokenHeader))) {
+            map.put("error", "old token is null");
+        } else {
             String token = request.getHeader(AuthConstant.tokenHeader);
             String refreshedToken = service.refresh(token);
             if (refreshedToken == null) {

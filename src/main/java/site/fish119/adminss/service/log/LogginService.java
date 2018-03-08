@@ -18,17 +18,19 @@ import site.fish119.adminss.utils.MainUtil;
  */
 @Service
 public class LogginService {
+    private final LoggingRepository loggingRepository;
     @Autowired
-    private LoggingRepository loggingRepository;
+    public LogginService(LoggingRepository loggingRepository){
+        this.loggingRepository = loggingRepository;
+    }
 
     public Iterable<Logging_event> searchLogs(String level, String searchStr, Integer page, Integer size, String sortColumn, String direction) {
         Pageable pageable = MainUtil.getPageRequest(page, size, sortColumn, direction);
 
-        /**Note: generated sources first
-         * run maven/maven generated sources
-         * run maven clean
-         * run maven compile
-         */
+//        Note: generated sources first
+//        run maven/maven generated sources
+//        run maven clean
+//        run maven compile
         QLogging_event ql = QLogging_event.logging_event;
         Predicate predicate;
         if (level != null) {

@@ -12,8 +12,10 @@ import java.util.Map;
 
 @RestController
 public class AuthorityController {
-    @Autowired
-    private AuthorityService authorityService;
+    @Autowired public AuthorityController(AuthorityService authorityService){
+        this.authorityService = authorityService;
+    }
+    private final AuthorityService authorityService;
 
     @RequestMapping(value = "/setting/authorities", method = RequestMethod.GET)
     public ResponseEntity<?> getAllAuthority() {

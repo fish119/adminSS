@@ -1,7 +1,6 @@
 package site.fish119.adminss.service.setting;
 
 import com.querydsl.core.types.Predicate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,10 +25,13 @@ import java.util.Date;
 
 @Service
 public class UserService {
-    @Autowired
-    SysUserRepository userRepository;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final SysUserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+
+    public UserService(SysUserRepository userRepository, AuthenticationManager authenticationManager) {
+        this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
+    }
 
     @Value("${web.upload-path}")
     private String avatarPath;

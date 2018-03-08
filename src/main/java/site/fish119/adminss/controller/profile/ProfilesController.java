@@ -18,14 +18,18 @@ import java.util.Map;
 @RestController
 public class ProfilesController {
     @Autowired
-    private UserService userService;
-    @Autowired
-    private DepartService departService;
-    @Autowired
-    private RoleService roleService;
+    public ProfilesController(UserService userService, DepartService departService, RoleService roleService) {
+        this.userService = userService;
+        this.departService = departService;
+        this.roleService = roleService;
+    }
+
+    private final UserService userService;
+    private final DepartService departService;
+    private final RoleService roleService;
 
     @RequestMapping(value = "/setting/profile", method = RequestMethod.GET)
-    public ResponseEntity<?> getProfile(){
+    public ResponseEntity<?> getProfile() {
         Map<String, Object> result = new HashMap<>();
         result.put("user", userService.findCurrentUser());
         result.put("departments", departService.findAll());
@@ -43,12 +47,12 @@ public class ProfilesController {
     }
 
     @RequestMapping(value = "/setting/profile/changePassword", method = RequestMethod.POST)
-    public ResponseEntity<?> changePassword(@RequestBody JSONObject reqBody){
+    public ResponseEntity<?> changePassword(@RequestBody JSONObject reqBody) {
         Map<String, String> result = new HashMap<>();
         String oldPassword = reqBody.getString("oldPassword");
         String newPassword = reqBody.getString("newPassword");
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        userService.changePassword(username,oldPassword,newPassword);
+        userService.changePassword(username, oldPassword, newPassword);
         result.put("data", "SUCCESS");
         return ResponseEntity.ok(result);
     }

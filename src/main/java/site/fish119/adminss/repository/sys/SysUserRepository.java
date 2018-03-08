@@ -21,7 +21,7 @@ public interface SysUserRepository extends PagingAndSortingRepository<User, Long
     @Override
     User findOne(Long id);
 
-    @Override
+//    @Override
 //    @Caching(
 //            evict = {@CacheEvict(cacheNames = "sysUsers", key = "#root.caches[0].get('useridAndName:'+#p0.id).get().username",beforeInvocation = true,condition ="#root.caches[0].get('useridAndName:'+#p0.id) != null" )},
 //            put = {
@@ -29,5 +29,5 @@ public interface SysUserRepository extends PagingAndSortingRepository<User, Long
 //                    @CachePut(cacheNames = "sysUsers", key = "#result.username", condition = "#result!=null")
 //            }
 //    )
-    User save(User user);
+//    User save(User user);
 }

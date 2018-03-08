@@ -13,7 +13,11 @@ import java.util.Map;
 @RestController
 public class UserController {
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    private final UserService userService;
 
     @RequestMapping(value = "/setting/users", method = RequestMethod.GET)
     public ResponseEntity<?> getPageAndSortUsers(
@@ -52,30 +56,30 @@ public class UserController {
     }
 
     @RequestMapping(value = "/setting/user/{id}/phone/{phone}", method = RequestMethod.GET)
-    public ResponseEntity<?> findUserByPhone(@PathVariable("id") Long id,@PathVariable("phone") String phone) {
+    public ResponseEntity<?> findUserByPhone(@PathVariable("id") Long id, @PathVariable("phone") String phone) {
         Map<String, Boolean> result = new HashMap<>();
-        result.put("data", userService.testUniquePhone(phone,id));
+        result.put("data", userService.testUniquePhone(phone, id));
         return ResponseEntity.ok(result);
     }
 
     @RequestMapping(value = "/setting/user/{id}/username/{username}", method = RequestMethod.GET)
-    public ResponseEntity<?> findUserByUsername(@PathVariable("id") Long id,@PathVariable("username") String username) {
+    public ResponseEntity<?> findUserByUsername(@PathVariable("id") Long id, @PathVariable("username") String username) {
         Map<String, Boolean> result = new HashMap<>();
-        result.put("data", userService.testUniqueUsername(username,id));
+        result.put("data", userService.testUniqueUsername(username, id));
         return ResponseEntity.ok(result);
     }
 
     @RequestMapping(value = "/setting/user/{id}/nickname/{nickname}", method = RequestMethod.GET)
-    public ResponseEntity<?> findUserByNickname(@PathVariable("id") Long id,@PathVariable("nickname") String nickname) {
+    public ResponseEntity<?> findUserByNickname(@PathVariable("id") Long id, @PathVariable("nickname") String nickname) {
         Map<String, Boolean> result = new HashMap<>();
-        result.put("data", userService.testUniqueNickname(nickname,id));
+        result.put("data", userService.testUniqueNickname(nickname, id));
         return ResponseEntity.ok(result);
     }
 
     @RequestMapping(value = "/setting/user/{id}/email", method = RequestMethod.GET)
-    public ResponseEntity<?> findUserByEmail(@PathVariable("id") Long id,@RequestParam("email") String email) {
+    public ResponseEntity<?> findUserByEmail(@PathVariable("id") Long id, @RequestParam("email") String email) {
         Map<String, Boolean> result = new HashMap<>();
-        result.put("data", userService.testUniqueEmail(email,id));
+        result.put("data", userService.testUniqueEmail(email, id));
         return ResponseEntity.ok(result);
     }
 

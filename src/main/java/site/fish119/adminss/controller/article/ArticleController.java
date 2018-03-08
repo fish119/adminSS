@@ -24,8 +24,13 @@ import java.util.Map;
  */
 @RestController
 public class ArticleController {
+
+    private final ArticleService articleService;
+
     @Autowired
-    private ArticleService articleService;
+    public ArticleController(ArticleService articleService) {
+        this.articleService = articleService;
+    }
 
     @RequestMapping(value = "/article/categories", method = RequestMethod.GET)
     public ResponseEntity<?> getAllCategories() {

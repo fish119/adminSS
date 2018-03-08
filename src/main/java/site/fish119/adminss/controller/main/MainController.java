@@ -10,8 +10,12 @@ import site.fish119.adminss.service.main.MainService;
 
 @RestController
 public class MainController {
+    private final MainService mainService;
+
     @Autowired
-    MainService mainService;
+    public MainController(MainService mainService) {
+        this.mainService = mainService;
+    }
 
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     public ResponseEntity<?> index() {

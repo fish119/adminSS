@@ -14,9 +14,13 @@ import java.util.Map;
 @RestController
 public class RoleController {
     @Autowired
-    private RoleService roleService;
-    @Autowired
-    private MenuService menuService;
+    public RoleController(RoleService roleService, MenuService menuService) {
+        this.menuService = menuService;
+        this.roleService = roleService;
+    }
+
+    private final RoleService roleService;
+    private final MenuService menuService;
 
     @RequestMapping(value = "/setting/roles", method = RequestMethod.GET)
     public ResponseEntity<?> getAllRoles() {
@@ -30,7 +34,7 @@ public class RoleController {
         Map<String, Object> result = new HashMap<>();
         roleService.save(reqBody.getObject("role", Role.class));
         result.put("data", roleService.findAll());
-        result.put("userMenus",menuService.getCurrentUserMenus());
+        result.put("userMenus", menuService.getCurrentUserMenus());
         return ResponseEntity.ok(result);
     }
 
@@ -39,7 +43,7 @@ public class RoleController {
         Map<String, Object> result = new HashMap<>();
         roleService.delRole(id);
         result.put("data", roleService.findAll());
-        result.put("userMenus",menuService.getCurrentUserMenus());
+        result.put("userMenus", menuService.getCurrentUserMenus());
         return ResponseEntity.ok(result);
     }
 }

@@ -13,7 +13,11 @@ import java.util.Map;
 @RestController
 public class DepartController {
     @Autowired
-    private DepartService departService;
+    public DepartController(DepartService departService) {
+        this.departService = departService;
+    }
+
+    private final DepartService departService;
 
     @RequestMapping(value = "/setting/departments", method = RequestMethod.GET)
     public ResponseEntity<?> getAllDepartments() {
@@ -31,10 +35,10 @@ public class DepartController {
     }
 
     @RequestMapping(value = "/setting/department/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> delDepartment(@PathVariable("id") long id){
+    public ResponseEntity<?> delDepartment(@PathVariable("id") long id) {
         Map<String, Object> result = new HashMap<>();
         departService.del(id);
-        result.put("data",departService.findAll());
+        result.put("data", departService.findAll());
         return ResponseEntity.ok(result);
     }
 }

@@ -12,7 +12,11 @@ import site.fish119.adminss.repository.sys.SysUserRepository;
 //@Api(description = "Test", name = "Test")
 public class TestController {
     @Autowired
-    SysUserRepository userRepository;
+    public TestController(SysUserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    private final SysUserRepository userRepository;
 
     @RequestMapping(value = "/test/admin", method = RequestMethod.POST)
 //    @PreAuthorize("hasAuthority('ADMIN')")
@@ -20,14 +24,14 @@ public class TestController {
 //    @ApiAuthToken
     public ResponseEntity<?> test() {
         User u = userRepository.findOne(new Long(15));
-        u.setUsername(u.getUsername()+"1");
+        u.setUsername(u.getUsername() + "1");
         return ResponseEntity.ok(userRepository.save(u));
     }
 
-//    @ApiMethod
+    //    @ApiMethod
 //    @ApiAuthToken
     @RequestMapping(value = "/test/test", method = RequestMethod.POST)
-    public ResponseEntity<?> test2(){
-        return  ResponseEntity.ok("OK");
+    public ResponseEntity<?> test2() {
+        return ResponseEntity.ok("OK");
     }
 }

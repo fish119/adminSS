@@ -25,8 +25,12 @@ import java.util.Map;
  */
 @RestController
 public class LoggingController {
+    private final LogginService logginService;
+
     @Autowired
-    private LogginService logginService;
+    public LoggingController(LogginService logginService) {
+        this.logginService = logginService;
+    }
 
     @RequestMapping(value = "/logs", method = RequestMethod.GET)
     public ResponseEntity<?> getPageAndSortUsers(

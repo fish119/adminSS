@@ -10,17 +10,21 @@ import java.util.List;
 @Service
 public class RoleService {
     @Autowired
-    private SysRoleRepository roleRepository;
+    public RoleService(SysRoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
+
+    private final SysRoleRepository roleRepository;
 
     public List<Role> findAll() {
         return roleRepository.findAll();
     }
 
-    public Role save(Role role){
+    public Role save(Role role) {
         return roleRepository.save(role);
     }
 
-    public void delRole(Long id){
+    public void delRole(Long id) {
         roleRepository.delete(id);
     }
 }

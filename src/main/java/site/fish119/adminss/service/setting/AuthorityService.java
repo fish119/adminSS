@@ -14,7 +14,11 @@ import java.util.Set;
 @Service
 public class AuthorityService {
     @Autowired
-    private SysAuthorityRepository authorityRepository;
+    public AuthorityService(SysAuthorityRepository authorityRepository) {
+        this.authorityRepository = authorityRepository;
+    }
+
+    private final SysAuthorityRepository authorityRepository;
 
     public List<Authority> findAllAuthority() {
         return authorityRepository.findByParentIsNullOrderBySortAsc();
@@ -22,7 +26,7 @@ public class AuthorityService {
 
     @Transactional
     public void saveAuthority(Long parentId, Authority authority) {
-        LoggerFactory.getLogger(this.getClass()).info("authority:"+authority.getUrl());
+        LoggerFactory.getLogger(this.getClass()).info("authority:" + authority.getUrl());
         Authority parentMenu;
         if (authority.getId() != null) {
             Authority dbAuth = authorityRepository.findOne(authority.getId());
@@ -49,17 +53,17 @@ public class AuthorityService {
                 }
                 dbAuth.setParent(null);
 
-                LoggerFactory.getLogger(this.getClass()).info("dbAuth:"+dbAuth.getUrl());
+                LoggerFactory.getLogger(this.getClass()).info("dbAuth:" + dbAuth.getUrl());
                 authorityRepository.save(dbAuth);
             }
         } else {
             if (parentId != null) {
                 parentMenu = authorityRepository.findOne(parentId);
-                if(parentMenu.getChildren().isEmpty()){
+                if (parentMenu.getChildren().isEmpty()) {
                     Set<Authority> set = new HashSet<>();
                     set.add(authority);
                     parentMenu.setChildren(set);
-                }else {
+                } else {
                     parentMenu.getChildren().add(authority);
                 }
                 authority.setParent(parentMenu);

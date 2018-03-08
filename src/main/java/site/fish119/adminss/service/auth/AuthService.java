@@ -23,16 +23,20 @@ import java.util.HashSet;
 @Service
 public class AuthService {
     @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private SysUserRepository userRepository;
-    @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    TokenUtil tokenUtil;
+    public AuthService(AuthenticationManager authenticationManager, SysUserRepository userRepository,
+                       UserDetailsService userDetailsService, TokenUtil tokenUtil,SysRoleRepository roleRepository) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.userDetailsService = userDetailsService;
+        this.tokenUtil = tokenUtil;
+        this.roleRepository = roleRepository;
+    }
 
-    @Autowired
-    SysRoleRepository roleRepository;
+    private final AuthenticationManager authenticationManager;
+    private final SysUserRepository userRepository;
+    private final UserDetailsService userDetailsService;
+    private final TokenUtil tokenUtil;
+    private final SysRoleRepository roleRepository;
 
     public String login(String username, String password) {
         UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(username, password);
@@ -45,7 +49,7 @@ public class AuthService {
 
     public User register(AuthRequest requestUser) {
         final String username = requestUser.getUsername();
-        if(userRepository.findByUsername(username)!=null) {
+        if (userRepository.findByUsername(username) != null) {
             return null;
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -60,8 +64,8 @@ public class AuthService {
     public String refresh(String oldToken) {
         final String token = oldToken.substring(AuthConstant.tokenPrefix.length());
         String username = tokenUtil.getUsernameFromToken(token);
-        UserDetailsImple user = (UserDetailsImple)userDetailsService.loadUserByUsername(username);
-        if (tokenUtil.canTokenBeRefreshed(token, user.getLastPasswordResetDate())){
+        UserDetailsImple user = (UserDetailsImple) userDetailsService.loadUserByUsername(username);
+        if (tokenUtil.canTokenBeRefreshed(token, user.getLastPasswordResetDate())) {
             return tokenUtil.refreshToken(token);
         }
         return null;
@@ -69,7 +73,7 @@ public class AuthService {
 
     public User registerAdmin(AuthRequest requestUser) {
         final String username = requestUser.getUsername();
-        if(userRepository.findByUsername(username)!=null) {
+        if (userRepository.findByUsername(username) != null) {
             return null;
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();

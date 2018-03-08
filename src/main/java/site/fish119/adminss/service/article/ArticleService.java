@@ -32,11 +32,15 @@ import java.util.UUID;
 @Service
 public class ArticleService {
     @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private ArticleRepository articleRepository;
-    @Autowired
-    SysUserRepository userRepository;
+    public ArticleService(CategoryRepository categoryRepository, ArticleRepository articleRepository, SysUserRepository userRepository) {
+        this.categoryRepository = categoryRepository;
+        this.articleRepository = articleRepository;
+        this.userRepository = userRepository;
+    }
+
+    private final CategoryRepository categoryRepository;
+    private final ArticleRepository articleRepository;
+    private final SysUserRepository userRepository;
 
     @Value("${web.upload-path}")
     private String uploadPath;
@@ -87,9 +91,9 @@ public class ArticleService {
 
     public Iterable<Article> findArticles(Long id, String searchStr, Integer page, Integer size, String sortColumn, String direction) {
         Pageable pageable = MainUtil.getPageRequest(page, size, sortColumn, direction);
-        if(id==null){
-            return articleRepository.findByTitleIgnoreCaseContains(searchStr,pageable);
-        }else {
+        if (id == null) {
+            return articleRepository.findByTitleIgnoreCaseContains(searchStr, pageable);
+        } else {
             return articleRepository.findByCategory_IdAndTitleIgnoreCaseContains(id, searchStr, pageable);
         }
     }
@@ -111,7 +115,7 @@ public class ArticleService {
     }
 
     @Transactional
-    public void delArticle(Long id){
+    public void delArticle(Long id) {
         articleRepository.delete(id);
     }
 }

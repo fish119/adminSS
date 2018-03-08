@@ -11,7 +11,11 @@ import java.util.List;
 @Service
 public class DepartService {
     @Autowired
-    private SysDepartmentRepository departmentRepository;
+    public DepartService(SysDepartmentRepository departmentRepository) {
+        this.departmentRepository = departmentRepository;
+    }
+
+    private final SysDepartmentRepository departmentRepository;
 
     public List<Department> findAll() {
         return departmentRepository.findByParentIsNullOrderBySortAsc();
@@ -48,8 +52,8 @@ public class DepartService {
     @Transactional
     public void del(Long id) {
         Department dp = departmentRepository.findOne(id);
-        if(dp!=null){
-            if(dp.getParent()!=null){
+        if (dp != null) {
+            if (dp.getParent() != null) {
                 dp.getParent().getChildren().remove(dp);
                 departmentRepository.saveAndFlush(dp.getParent());
                 dp.setParent(null);

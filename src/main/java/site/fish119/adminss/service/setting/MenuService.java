@@ -19,10 +19,14 @@ import java.util.Set;
 @Service
 public class MenuService {
     @Autowired
-    private SysMenuRepository menuRepository;
+    public MenuService(SysMenuRepository menuRepository, SysUserRepository userRepository) {
+        this.menuRepository = menuRepository;
+        this.userRepository = userRepository;
+    }
 
-    @Autowired
-    private SysUserRepository userRepository;
+    private final SysMenuRepository menuRepository;
+
+    private final SysUserRepository userRepository;
 
     public List<Menu> findAllMenus() {
         return menuRepository.findByParentIsNullOrderBySortAsc();

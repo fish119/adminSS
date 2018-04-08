@@ -53,29 +53,12 @@ public class ArticleService {
     @Transactional
     public void saveCategory(Long parentId, Category category) {
         Category dbCategory = category.getId() == null ? category : categoryRepository.findOne(category.getId());
-        Category oldParent = dbCategory.getParent();
-        if (parentId != null) {
-            Category parentCategory = categoryRepository.findOne(parentId);
-            if (oldParent != null && !oldParent.getId().equals(parentId)) {
-                dbCategory.getParent().getChildren().remove(dbCategory);
-                categoryRepository.saveAndFlush(oldParent);
-            }
-            dbCategory.setParent(parentCategory);
-            parentCategory.getChildren().add(dbCategory);
-        } else {
-            if (oldParent != null) {
-                dbCategory.getParent().getChildren().remove(dbCategory);
-                categoryRepository.saveAndFlush(oldParent);
-            }
-            dbCategory.setParent(null);
+        if(category.getId()!=null) {
+            dbCategory.setName(category.getName());
+            dbCategory.setSort(category.getSort());
         }
-
-        dbCategory.setName(category.getName());
-        dbCategory.setSort(category.getSort());
-        categoryRepository.saveAndFlush(dbCategory);
-        if (dbCategory.getParent() != null) {
-            categoryRepository.saveAndFlush(dbCategory.getParent());
-        }
+        dbCategory.setParent(parentId==null?null:categoryRepository.findOne(parentId));
+        categoryRepository.save(dbCategory);
     }
 
     @Transactional

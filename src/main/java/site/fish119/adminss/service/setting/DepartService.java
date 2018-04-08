@@ -23,30 +23,13 @@ public class DepartService {
 
     @Transactional
     public void save(Long parentId, Department depart) {
-        Department dbDepartment = depart.getId() == null ? depart : departmentRepository.findOne(depart.getId());
-        Department oldParent = dbDepartment.getParent();
-        if (parentId != null) {
-            Department parentDepartment = departmentRepository.findOne(parentId);
-            if (oldParent != null && !oldParent.getId().equals(parentId)) {
-                dbDepartment.getParent().getChildren().remove(dbDepartment);
-                departmentRepository.saveAndFlush(oldParent);
-            }
-            dbDepartment.setParent(parentDepartment);
-            parentDepartment.getChildren().add(dbDepartment);
-        } else {
-            if (oldParent != null) {
-                dbDepartment.getParent().getChildren().remove(dbDepartment);
-                departmentRepository.saveAndFlush(oldParent);
-            }
-            dbDepartment.setParent(null);
+        Department dbDepart = depart.getId() == null ? depart : departmentRepository.findOne(depart.getId());
+        if(depart.getId()!=null) {
+            dbDepart.setName(depart.getName());
+            dbDepart.setSort(depart.getSort());
         }
-
-        dbDepartment.setName(depart.getName());
-        dbDepartment.setSort(depart.getSort());
-        departmentRepository.saveAndFlush(dbDepartment);
-        if (dbDepartment.getParent() != null) {
-            departmentRepository.saveAndFlush(dbDepartment.getParent());
-        }
+        dbDepart.setParent(parentId==null?null:departmentRepository.findOne(parentId));
+        departmentRepository.save(dbDepart);
     }
 
     @Transactional

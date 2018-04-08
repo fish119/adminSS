@@ -27,9 +27,9 @@ public class Department extends BaseEntity {
 
     private Long sort;
 
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parent_id")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     private Department parent;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -37,8 +37,29 @@ public class Department extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private Set<Department> children = new HashSet<>(0);
 
-    @OneToMany(fetch= FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name="dept_id")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "dept_id")
     @JsonIgnore
     private Set<User> users;
+
+    public Department getParent() {
+        return parent;
+    }
+
+    public void setParent(Department parent) {
+        if (sameParent(parent))
+            return;
+        Department oldParent = this.parent;
+        this.parent = parent;
+        if (oldParent != null) {
+            oldParent.getChildren().remove(this);
+        }
+        if (parent != null && !parent.getChildren().contains(this)) {
+            parent.getChildren().add(this);
+        }
+    }
+
+    private boolean sameParent(Department newParent) {
+        return parent == null ? newParent == null : parent.equals(newParent);
+    }
 }

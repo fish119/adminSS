@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import site.fish119.adminss.domain.sys.Menu;
 import site.fish119.adminss.service.setting.MenuService;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class MenuController {
@@ -30,7 +29,9 @@ public class MenuController {
     public ResponseEntity<?> saveMenu(@RequestBody JSONObject reqBody) {
         Map<String, Object> result = new HashMap<>();
         settingService.saveMenu(reqBody.getLong("parentId"), reqBody.getObject("menu", Menu.class));
-        result.put("data", settingService.findAllMenus());
+        //由于下一句的getCurrentUserMenus()方法会更改本具所获得的结果
+        //因此调用service的getNewCopyMenuList方法，重新生成结果数组并返回给客户端
+        result.put("data", settingService.getNewCopyMenuList(settingService.findAllMenus()));
         result.put("userMenus", settingService.getCurrentUserMenus());
         return ResponseEntity.ok(result);
     }
@@ -39,7 +40,9 @@ public class MenuController {
     public ResponseEntity<?> delMenu(@PathVariable("id") long id) {
         Map<String, Object> result = new HashMap<>();
         settingService.delMenu(id);
-        result.put("data", settingService.findAllMenus());
+        //由于下一句的getCurrentUserMenus()方法会更改本具所获得的结果
+        //因此调用service的getNewCopyMenuList方法，重新生成结果数组并返回给客户端
+        result.put("data", settingService.getNewCopyMenuList(settingService.findAllMenus()));
         result.put("userMenus", settingService.getCurrentUserMenus());
         return ResponseEntity.ok(result);
     }
@@ -48,7 +51,9 @@ public class MenuController {
     public ResponseEntity<?> delSubMenu(@PathVariable("parentId") long parentId, @PathVariable("id") long id) {
         Map<String, Object> result = new HashMap<>();
         settingService.delSubMenu(parentId, id);
-        result.put("data", settingService.findAllMenus());
+        //由于下一句的getCurrentUserMenus()方法会更改本具所获得的结果
+        //因此调用service的getNewCopyMenuList方法，重新生成结果数组并返回给客户端
+        result.put("data", settingService.getNewCopyMenuList(settingService.findAllMenus()));
         result.put("userMenus", settingService.getCurrentUserMenus());
         return ResponseEntity.ok(result);
     }

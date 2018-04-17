@@ -5,14 +5,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.fish119.adminss.utils.MainUtil;
 import site.fish119.adminss.domain.sys.Menu;
 import site.fish119.adminss.domain.sys.User;
 import site.fish119.adminss.repository.sys.SysMenuRepository;
 import site.fish119.adminss.repository.sys.SysUserRepository;
 import site.fish119.adminss.security.UserDetailsImple;
+import site.fish119.adminss.utils.MainUtil;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,50 +33,42 @@ public class MenuService {
         return menuRepository.findByParentIsNullOrderBySortAsc();
     }
 
+    public List<Menu> getNewCopyMenuList(List<Menu> oldList){
+        List<Menu> data= new ArrayList<>();
+        for(Menu menu : oldList){
+            Menu tmp = new Menu();
+            tmp.setAction(menu.getAction());
+            tmp.setIcon(menu.getIcon());
+            tmp.setTitle(menu.getTitle());
+            tmp.setSort(menu.getSort());
+            tmp.setId(menu.getId());
+            Set<Menu> children = new LinkedHashSet<>();
+            for(Menu tmpChild : menu.getChildren()){
+                Menu child = new Menu();
+                child.setAction(tmpChild.getAction());
+                child.setIcon(tmpChild.getIcon());
+                child.setTitle(tmpChild.getTitle());
+                child.setSort(tmpChild.getSort());
+                child.setId(tmpChild.getId());
+                children.add(child);
+            }
+            tmp.setChildren(children);
+            data.add(tmp);
+        }
+        return data;
+    }
+
     @Transactional
     public void saveMenu(Long parentId, Menu menu) {
-        Menu parentMenu;
-        if (menu.getId() != null) {
-            Menu dbMenu = menuRepository.findOne(menu.getId());
-            dbMenu.setAction(menu.getAction());
+        Menu dbMenu = menu.getId() == null ? menu : menuRepository.findOne(menu.getId());
+        if(menu.getId()!=null) {
             dbMenu.setIcon(menu.getIcon());
-            dbMenu.setSort(menu.getSort());
             dbMenu.setTitle(menu.getTitle());
-            if (parentId != null) {
-                parentMenu = menuRepository.findOne(parentId);
-                if (dbMenu.getParent() != null) {
-                    Menu oldParent = menuRepository.findOne(dbMenu.getParent().getId());
-                    oldParent.getChildren().remove(dbMenu);
-                    menuRepository.save(oldParent);
-                }
-                dbMenu.setParent(parentMenu);
-                parentMenu.getChildren().add(dbMenu);
-                menuRepository.save(parentMenu);
-            } else {
-                if (dbMenu.getParent() != null) {
-                    Menu oldParent = menuRepository.findOne(dbMenu.getParent().getId());
-                    oldParent.getChildren().remove(menuRepository.findOne(menu.getId()));
-                    menuRepository.save(oldParent);
-                }
-                dbMenu.setParent(null);
-                menuRepository.save(dbMenu);
-            }
-        } else {
-            if (parentId != null) {
-                parentMenu = menuRepository.findOne(parentId);
-                if (parentMenu.getChildren().isEmpty()) {
-                    Set<Menu> set = new HashSet<>();
-                    set.add(menu);
-                    parentMenu.setChildren(set);
-                } else {
-                    parentMenu.getChildren().add(menu);
-                }
-                menu.setParent(parentMenu);
-                menuRepository.save(parentMenu);
-            } else {
-                menuRepository.save(menu);
-            }
+            dbMenu.setSort(menu.getSort());
+            dbMenu.setAction(menu.getAction());
         }
+        dbMenu.setParent(parentId==null?null:menuRepository.findOne(parentId));
+        menuRepository.save(dbMenu);
     }
 
     @Transactional()

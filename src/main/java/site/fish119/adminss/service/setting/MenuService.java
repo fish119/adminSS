@@ -15,7 +15,6 @@ import site.fish119.adminss.utils.MainUtil;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class MenuService {
@@ -33,7 +32,7 @@ public class MenuService {
         return menuRepository.findByParentIsNullOrderBySortAsc();
     }
 
-    public List<Menu> getNewCopyMenuList(List<Menu> oldList){
+    public List<Menu> getNewCopyMenuList(Iterable<Menu> oldList){
         List<Menu> data= new ArrayList<>();
         for(Menu menu : oldList){
             Menu tmp = new Menu();
@@ -42,17 +41,7 @@ public class MenuService {
             tmp.setTitle(menu.getTitle());
             tmp.setSort(menu.getSort());
             tmp.setId(menu.getId());
-            Set<Menu> children = new LinkedHashSet<>();
-            for(Menu tmpChild : menu.getChildren()){
-                Menu child = new Menu();
-                child.setAction(tmpChild.getAction());
-                child.setIcon(tmpChild.getIcon());
-                child.setTitle(tmpChild.getTitle());
-                child.setSort(tmpChild.getSort());
-                child.setId(tmpChild.getId());
-                children.add(child);
-            }
-            tmp.setChildren(children);
+            tmp.setChildren(new LinkedHashSet<>(getNewCopyMenuList(menu.getChildren())));
             data.add(tmp);
         }
         return data;

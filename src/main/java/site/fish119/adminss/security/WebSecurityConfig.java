@@ -3,7 +3,6 @@ package site.fish119.adminss.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -73,39 +72,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint()).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/druid/**", "/auth/**", "/api-docs/",
-                        "/swagger-resources/**",
-                        "/swagger-ui.html",
-                        "/v2/api-docs",
-                        "/SPA/**",
-                        "/info/**",
-                        "/health/**",
-                        "/info/**",
-                        "/info/**",
-                        "/metrics/**",
-                        "/logfile/**",
-                        "/env/**",
-                        "/loggers/**",
-                        "/jolokia/**",
-                        "/auditevents/**",
-                        "/dump/**",
-                        "/liquibase/**",
-                        "/flyway/**",
-                        "/journal/**",
-                        "/trace/**",
-                        "/webjars/**").permitAll()
-                .antMatchers(
-                        HttpMethod.GET,
-                        "/",
-                        "/*.html",
-                        "/**/*.gif",
-                        "/**/*.png",
-                        "/**/*.jpg",
-                        "/favicon.ico",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js"
-                ).permitAll()
+                .antMatchers("/**").permitAll()
+
                 .anyRequest().authenticated();
 
         // 添加JWT filter

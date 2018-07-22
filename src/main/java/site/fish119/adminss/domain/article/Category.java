@@ -59,7 +59,7 @@ public class Category extends BaseEntity {
         if (oldParent != null) {
             oldParent.getChildren().remove(this);
         }
-        if (parent != null && !parent.getChildren().contains(this)) {
+        if (parent != null) {
             parent.getChildren().add(this);
         }
     }
